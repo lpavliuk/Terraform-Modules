@@ -1,0 +1,9 @@
+# General:
+.idea/
+__tmp/
+
+# App Spesific:
+terraform.tfstate
+terraform.tfstate.backup*
+.terraform/
+provider.tf
