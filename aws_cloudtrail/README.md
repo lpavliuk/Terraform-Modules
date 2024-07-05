@@ -14,7 +14,7 @@ locals {
 }
 
 module "s3_bucket" {
-  source    = "../../../../modules/aws_s3_bucket"
+  source    = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_s3_bucket"
 
   bucket_prefix                      = "${local.codename}-"
   enable_versioning                  = true
@@ -25,7 +25,7 @@ module "s3_bucket" {
 }
 
 module "cloudtrail" {
-  source    = "../../../../modules/aws_cloudtrail"
+  source    = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_cloudtrail"
 
   name                          = local.codename
   s3_bucket_name                = module.s3_bucket.name

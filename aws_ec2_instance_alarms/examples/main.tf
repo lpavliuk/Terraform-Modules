@@ -10,7 +10,7 @@ resource "aws_security_group" "this" {
 }
 
 module "ec2_instance" {
-  source = "../../../../modules/aws_ec2_instance"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ec2_instance"
 
   name              = local.name
   type              = local.instance_type
@@ -23,7 +23,7 @@ module "ec2_instance" {
 }
 
 module "ec2_instance_alarms" {
-  source = "../../../../modules/aws_ec2_instance_alarms"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ec2_instance_alarms"
 
   name_prefix           = "${local.zone}-"
   ec2_instance_id       = module.ec2_instance.id

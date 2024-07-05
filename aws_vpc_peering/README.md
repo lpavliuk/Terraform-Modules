@@ -9,7 +9,7 @@ This module creates VPC Peering connection between two VPCs and connects VPCs to
 ```hcl
 # main.tf
 module "vpc_peering" {
-  source = "../../../../modules/aws_vpc_peering"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_vpc_peering"
 
   providers = {
     aws.requester = aws

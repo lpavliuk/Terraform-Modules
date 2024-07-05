@@ -1,6 +1,6 @@
 # main.tf
 module "ecr_repository" {
-  source = "../../../../modules/aws_ecr_repository"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ecr_repository"
 
   name                          = "example-repo"
   enable_image_tag_immutability = true

@@ -5,7 +5,7 @@ resource "aws_route53_zone" "this" {
 }
 
 module "ses_domain_identity" {
-  source = "../../../../modules/aws_ses_domain_identity"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ses_domain_identity"
 
   domain_name = aws_route53_zone.this.name
 

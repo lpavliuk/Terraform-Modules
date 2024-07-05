@@ -1,6 +1,6 @@
 # main.tf
 module "ecs_service" {
-  source = "../../../../modules/aws_ecs_service"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ecs_service"
 
   name                         = "api"
   cluster_id                   = var.cluster_id

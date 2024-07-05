@@ -9,7 +9,7 @@ This module creates Amazon ECS (Elastic Container Service) cluster on EC2 with A
 ```hcl
 # main.tf
 module "ecs_cluster" {
-  source = "../../../../modules/aws_ecs_cluster"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ecs_cluster"
 
   name        = "example"
   subnet_ids  = var.subnet_group_subnets_ids

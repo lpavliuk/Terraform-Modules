@@ -19,7 +19,7 @@ resource "aws_security_group" "this" {
 }
 
 module "ec2_instance" {
-  source = "../../../../modules/aws_ec2_instance"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_ec2_instance"
 
   name              = local.name
   type              = local.instance_type

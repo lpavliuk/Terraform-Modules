@@ -1,6 +1,6 @@
 # main.tf
 module "alb" {
-  source = "../../../../modules/aws_elb_app"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_elb_app"
 
   name                  = local.codename
   vpc_id                = local.vpc_id

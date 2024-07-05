@@ -1,6 +1,6 @@
 # main.tf
 module "sms" {
-  source = "../../../../modules/aws_sns_sms"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_sns_sms"
 
   sms_limit_usd          = 50
   default_sender_id      = "Example"

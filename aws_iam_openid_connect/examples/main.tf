@@ -1,6 +1,6 @@
 # main.tf
 module "openid_connect" {
-  source = "../../../../modules/aws_iam_openid_connect"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_iam_openid_connect"
 
   client_url                  = "https://example.gitlab.com"
   client_id                   = "example.gitlab.com"

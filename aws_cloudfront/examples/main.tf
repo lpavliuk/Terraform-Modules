@@ -1,6 +1,6 @@
 # main.tf
 module "cloudfront" {
-  source = "../../../../modules/aws_cloudfront"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_cloudfront"
 
   name                   = var.codename
   alternate_domain_names = [var.web_client_host]
@@ -48,7 +48,7 @@ module "cloudfront" {
 }
 
 module "s3_bucket" {
-  source = "../../../../modules/aws_s3_bucket"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_s3_bucket"
 
   bucket_prefix           = "${local.codename}-cloudfront-"
   enable_versioning       = true

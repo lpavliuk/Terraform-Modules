@@ -9,7 +9,7 @@ This module creates AWS S3 Bucket with custom policies: `Read_Only`, `WriteRead_
 ```hcl
 # main.tf
 module "s3_bucket" {
-  source    = "../../../../modules/aws_s3_bucket"
+  source    = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_s3_bucket"
 
   bucket_prefix                      = "bucket-name-"
   enable_versioning                  = true

@@ -9,7 +9,7 @@ This module creates AWS Elastic File System (EFS) with Security Group attached t
 ```hcl
 # main.tf
 module "efs_artefacts" {
-  source = "../../../../modules/aws_efs"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_efs"
 
   name           = "${local.codename}-artefacts"
   vpc_id         = local.subnet_group_vpc_id

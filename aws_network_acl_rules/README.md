@@ -9,7 +9,7 @@ This module creates VPC Network ACL Rules.
 ```hcl
 # main.tf
 module "network_acl_rules" {
-  source   = "../../../../modules/aws_network_acl_rules"
+  source   = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_network_acl_rules"
   for_each = toset(local.subnet_groups_network_acl_ids)
 
   network_acl_id    = each.value

@@ -1,6 +1,6 @@
 # main.tf
 module "nlb" {
-  source = "../../../../modules/aws_elb_net"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_elb_net"
 
   name                  = local.codename
   vpc_id                = local.vpc_id

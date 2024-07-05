@@ -9,7 +9,7 @@ This module creates EC2 Security Group Rules.
 ```hcl
 # main.tf
 module "instance_sg_rules" {
-  source = "../../../../modules/aws_security_group_rules"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_security_group_rules"
 
   security_group_id = local.instance_sg_id
   inbound_rules     = [

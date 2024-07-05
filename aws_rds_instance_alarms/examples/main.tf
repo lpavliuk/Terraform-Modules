@@ -1,6 +1,6 @@
 # main.tf
 module "rds_instance" {
-  source = "../../../../modules/aws_rds_instance_mysql"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_rds_instance_mysql"
 
   name                       = local.codename
   instance_type              = "db.t3.micro"
@@ -26,7 +26,7 @@ module "rds_instance" {
 }
 
 module "rds_instance_alarms" {
-  source = "../../../../modules/aws_rds_instance_alarms"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_rds_instance_alarms"
 
   name_prefix       = "dev-"
   db_instance_name  = module.rds_instance.name

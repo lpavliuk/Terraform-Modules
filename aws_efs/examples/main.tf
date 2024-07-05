@@ -1,6 +1,6 @@
 # main.tf
 module "efs_artefacts" {
-  source = "../../../../modules/aws_efs"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_efs"
 
   name           = "${local.codename}-artefacts"
   vpc_id         = local.subnet_group_vpc_id

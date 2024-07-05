@@ -9,7 +9,7 @@ This module creates VPC Subnet Group that has up to 4 subnets (1 subnet in each 
 ```hcl
 # main.tf
 module "subnet_group" {
-  source = "../../../../modules/aws_vpc_subnet_group"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_vpc_subnet_group"
 
   name                  = "public"
   cidr                  = "10.0.0.0/18"

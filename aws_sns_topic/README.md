@@ -9,7 +9,7 @@ This module creates AWS SNS Topic.
 ```hcl
 # main.tf
 module "sns_topic" {
-  source = "../../../../modules/aws_sns_topic"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_sns_topic"
 
   name              = "slack-channel"
   subscriptions     = [

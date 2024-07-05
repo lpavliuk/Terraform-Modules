@@ -4,7 +4,7 @@ resource "aws_route53_zone" "this" {
 }
 
 module "acm_certificate" {
-  source = "../../../../modules/aws_acm_certificate"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_acm_certificate"
 
   domain_name = aws_route53_zone.this.name
   zone_id     = aws_route53_zone.this.zone_id

@@ -1,6 +1,6 @@
 # main.tf
 module "vpc" {
-  source = "../../../../modules/aws_vpc"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_vpc"
 
   name             = "example"
   cidr             = "10.0.0.0/16"

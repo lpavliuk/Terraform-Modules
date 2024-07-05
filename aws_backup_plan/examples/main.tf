@@ -1,6 +1,6 @@
 # main.tf
 module "backup_plan" {
-  source = "../../../../modules/aws_backup_plan"
+  source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_backup_plan"
 
   name = local.codename
 
