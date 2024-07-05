@@ -2,17 +2,17 @@
 module "ecs_service" {
   source = "../../../../modules/aws_ecs_service"
 
-  name                         = "portal-api"
+  name                         = "api"
   cluster_id                   = var.cluster_id
   capacity_provider_name       = var.capacity_provider_name
   desired_count                = 2
 
   containers = [
     {
-      name                         = "portal-api"
+      name                         = "api"
       links                        = ["mysql"]
       port                         = 52150
-      image                        = "registry.larder.investfast.digital/ui-group/customer-portal-proxy-api:dev"
+      image                        = "gitlab.example.com/group/api:latest"
       private_registry_credentials = {
         username = var.gitlab_token_username
         password = var.gitlab_token_secret
