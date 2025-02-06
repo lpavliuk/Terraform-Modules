@@ -35,6 +35,8 @@ module "vpc" {
 | <a name="input_name"></a> [name](#input\_name) | VPC Name | `string` | n/a | yes |
 | <a name="input_cidr"></a> [cidr](#input\_cidr) | IPv4 CIDR Block for the VPC (e.g. `10.0.0.0/16`). Must have `/16` mask | `string` | n/a | yes |
 | <a name="input_domain_zone_name"></a> [domain\_zone\_name](#input\_domain\_zone\_name) | Private Hosted Zone Name that will be created in Route53 | `string` | `null` | no |
+| <a name="input_enable_flow_logs"></a> [enable\_flow\_logs](#input\_enable\_flow\_logs) | Enable Flow Logs to CloudWatch | `bool` | `false` | no |
+| <a name="input_flow_logs_retention_in_days"></a> [flow\_logs\_retention\_in\_days](#input\_flow\_logs\_retention\_in\_days) | Retention in days for Flow Logs in CloudWatch | `number` | `7` | no |
 
 ## Outputs
 
@@ -50,18 +52,25 @@ module "vpc" {
 | <a name="output_region"></a> [region](#output\_region) | VPC AWS Region Name |
 | <a name="output_domain_zone_id"></a> [domain\_zone\_id](#output\_domain\_zone\_id) | Route53 Private Hosted Zone ID |
 | <a name="output_domain_zone_name"></a> [domain\_zone\_name](#output\_domain\_zone\_name) | Route53 Private Hosted Zone Name |
+| <a name="output_flow_logs_group"></a> [flow\_logs\_group](#output\_flow\_logs\_group) | CloudWatch Log Group for VPC Flow Logs |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_log_group.flow_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_ec2_managed_prefix_list.this_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_managed_prefix_list) | resource |
 | [aws_ec2_managed_prefix_list_entry.entry](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_managed_prefix_list_entry) | resource |
+| [aws_flow_log.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/flow_log) | resource |
+| [aws_iam_role.flow_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.flow_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_internet_gateway.this_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_security_group.this_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.assume_role_vpc_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.flow_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 <!-- END_TF_DOCS -->

@@ -66,7 +66,8 @@ module "ec2_instance" {
 | <a name="output_vpc_security_group_ids"></a> [vpc\_security\_group\_ids](#output\_vpc\_security\_group\_ids) | Security Group IDs attached to the Instance |
 | <a name="output_availability_zone"></a> [availability\_zone](#output\_availability\_zone) | Availability Zone the Instance launched in |
 | <a name="output_iam_role_name"></a> [iam\_role\_name](#output\_iam\_role\_name) | IAM Role attached to the Instance |
-| <a name="output_iam_profile"></a> [iam\_profile](#output\_iam\_profile) | IAM Profile attached to the Instance |
+| <a name="output_iam_profile"></a> [iam\_profile](#output\_iam\_profile) | IAM Profile Name attached to the Instance |
+| <a name="output_iam_profile_arn"></a> [iam\_profile\_arn](#output\_iam\_profile\_arn) | IAM Profile ARN attached to the Instance |
 
 ## Resources
 

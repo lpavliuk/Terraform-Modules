@@ -45,14 +45,15 @@ data "aws_ssm_parameter" "ecs_node_ami" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | Name of the ECS Cluster<br><br>**NOTE!** Must contain alphanumeric characters or hyphens (`-`). | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name of the ECS Cluster<br/><br/>**NOTE!** Must contain alphanumeric characters or hyphens (`-`). | `string` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs | `list(string)` | n/a | yes |
-| <a name="input_node_image_id"></a> [node\_image\_id](#input\_node\_image\_id) | Node Image (AMI) ID.<br><br>**NOTE!** Changing this will trigger instance refresh! | `string` | n/a | yes |
+| <a name="input_node_image_id"></a> [node\_image\_id](#input\_node\_image\_id) | Node Image (AMI) ID.<br/><br/>**NOTE!** Changing this will trigger instance refresh! | `string` | n/a | yes |
 | <a name="input_node_instance_type"></a> [node\_instance\_type](#input\_node\_instance\_type) | Node Instance Type | `string` | `"t4g.micro"` | no |
 | <a name="input_node_min_count"></a> [node\_min\_count](#input\_node\_min\_count) | Minimum number of Nodes in Auto Scaling Group | `number` | `2` | no |
 | <a name="input_node_max_count"></a> [node\_max\_count](#input\_node\_max\_count) | Maximum number of Nodes in Auto Scaling Group. Default is the `min_nodes_count` | `number` | `null` | no |
 | <a name="input_node_security_group_ids"></a> [node\_security\_group\_ids](#input\_node\_security\_group\_ids) | Security Groups IDs attached to the Node | `list(string)` | `[]` | no |
-| <a name="input_node_extra_tags"></a> [node\_extra\_tags](#input\_node\_extra\_tags) | Node Extra Tags | <pre>list(object({<br>    key                 = string,<br>    value               = string,<br>    propagate_at_launch = bool<br>  }))</pre> | `[]` | no |
+| <a name="input_node_extra_tags"></a> [node\_extra\_tags](#input\_node\_extra\_tags) | Node Extra Tags | <pre>list(object({<br/>    key                 = string,<br/>    value               = string,<br/>    propagate_at_launch = bool<br/>  }))</pre> | `[]` | no |
+| <a name="input_enable_session_manager"></a> [enable\_session\_manager](#input\_enable\_session\_manager) | Enable Session Manager for the ECS Nodes | `bool` | `false` | no |
 
 ## Outputs
 
@@ -78,6 +79,7 @@ data "aws_ssm_parameter" "ecs_node_ami" {
 | [aws_ecs_cluster_capacity_providers.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_cluster_capacity_providers) | resource |
 | [aws_iam_instance_profile.ecs_node](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_role.ecs_node](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.ssm_managed_instance_core](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.this_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.ecs_node](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_iam_policy_document.ecs_node_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |

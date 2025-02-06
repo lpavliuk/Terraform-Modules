@@ -81,8 +81,8 @@ module "rds_instance_alarms" {
 | <a name="input_burst_balance_too_low_threshold"></a> [burst\_balance\_too\_low\_threshold](#input\_burst\_balance\_too\_low\_threshold) | The minimum percent of General Purpose SSD (gp2) burst-bucket I/O credits available | `number` | `90` | no |
 | <a name="input_disk_queue_depth_too_high_threshold"></a> [disk\_queue\_depth\_too\_high\_threshold](#input\_disk\_queue\_depth\_too\_high\_threshold) | The maximum number of outstanding IOs (read/write requests) waiting to access the disk | `number` | `64` | no |
 | <a name="input_disk_free_storage_space_threshold"></a> [disk\_free\_storage\_space\_threshold](#input\_disk\_free\_storage\_space\_threshold) | The minimum amount of available storage space in Megabytes | `number` | `2000` | no |
-| <a name="input_freeable_memory_too_low_threshold"></a> [freeable\_memory\_too\_low\_threshold](#input\_freeable\_memory\_too\_low\_threshold) | The minimum amount of available random access memory in Megabytes | `number` | `100` | no |
-| <a name="input_memory_swap_usage_too_high_threshold"></a> [memory\_swap\_usage\_too\_high\_threshold](#input\_memory\_swap\_usage\_too\_high\_threshold) | The maximum amount of swap space used on the DB instance in Megabytes | `number` | `256` | no |
+| <a name="input_freeable_memory_too_low_threshold"></a> [freeable\_memory\_too\_low\_threshold](#input\_freeable\_memory\_too\_low\_threshold) | The minimum amount of available random access memory in Megabytes | `number` | `25` | no |
+| <a name="input_memory_swap_usage_too_high_threshold"></a> [memory\_swap\_usage\_too\_high\_threshold](#input\_memory\_swap\_usage\_too\_high\_threshold) | The maximum amount of swap space used on the DB instance in Megabytes | `number` | `1000` | no |
 | <a name="input_db_connections_limit_threshold"></a> [db\_connections\_limit\_threshold](#input\_db\_connections\_limit\_threshold) | The maximum percent of connections connected to the DB instance | `number` | `80` | no |
 
 ## Outputs

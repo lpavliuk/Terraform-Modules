@@ -96,6 +96,15 @@ resource "aws_launch_template" "ecs_node" {
     enabled = true
   }
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 30
+      volume_type = "gp3"
+      encrypted   = true
+    }
+  }
+
   # [!] It is required to pass ECS cluster name, so AWS can register EC2 instance as node of ECS cluster.
   user_data = base64encode(<<-EOF
       #!/bin/bash
@@ -137,4 +146,12 @@ data "aws_iam_policy_document" "ecs_node_role_policy" {
 resource "aws_iam_role_policy_attachment" "this_iam_role" {
   role       = aws_iam_role.ecs_node.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment
+resource "aws_iam_role_policy_attachment" "ssm_managed_instance_core" {
+  count      = var.enable_session_manager ? 1 : 0
+
+  role       = aws_iam_role.ecs_node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }

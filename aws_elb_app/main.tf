@@ -1,7 +1,3 @@
-locals {
-  s3_bucket_name = "alb-logs-${var.name}"
-}
-
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb
 resource "aws_lb" "this" {
   name               = var.name
@@ -14,9 +10,22 @@ resource "aws_lb" "this" {
   preserve_host_header       = var.preserve_host_header
   xff_header_processing_mode = var.xff_header_processing_mode
 
-  access_logs {
-    bucket  = local.s3_bucket_name
-    enabled = var.enable_logging ? true : false
+  dynamic "access_logs" {
+    for_each = var.enable_logging ? [true] : []
+
+    content {
+      bucket  = aws_s3_bucket.alb_logs[0].id
+      enabled = var.enable_logging ? true : false
+    }
+  }
+
+  dynamic "connection_logs" {
+    for_each = var.enable_logging ? [true] : []
+
+    content {
+      bucket  = aws_s3_bucket.alb_logs[0].id
+      enabled = var.enable_logging ? true : false
+    }
   }
 }
 
@@ -26,19 +35,39 @@ resource "aws_lb_listener" "http" {
   port              = "80"
   protocol          = "HTTP"
 
-  default_action {
-    type = "redirect"
+  dynamic "default_action" { # When HTTPS Listener is not created
+    for_each = var.https_certificate_arn == null ? [true] : []
 
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+    content {
+      type = "fixed-response"
+
+      fixed_response {
+        content_type = "text/plain"
+        message_body = "503 Service Temporarily Unavailable"
+        status_code  = "503"
+      }
+    }
+  }
+
+  dynamic "default_action" { # When HTTPS Listener is created
+    for_each = var.https_certificate_arn == null ? [] : [true]
+
+    content {
+      type = "redirect"
+
+      redirect {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
     }
   }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener
 resource "aws_lb_listener" "https" {
+  count = var.https_certificate_arn == null ? 0 : 1
+
   load_balancer_arn = aws_lb.this.arn
   port              = "443"
   protocol          = "HTTPS"
@@ -62,14 +91,9 @@ resource "aws_security_group" "this" {
   vpc_id      = var.vpc_id
 }
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
-resource "aws_s3_bucket" "alb_logs" {
-  count = var.enable_logging ? 1 : 0
-
-  bucket        = local.s3_bucket_name
-  force_destroy = true
-}
-
+# =======================================================
+# ALB Logging
+# =======================================================
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
 data "aws_iam_policy_document" "allow_alb_logging" {
   count = var.enable_logging ? 1 : 0
@@ -83,7 +107,7 @@ data "aws_iam_policy_document" "allow_alb_logging" {
     }
 
     actions   = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.alb_logs[0].arn}/AWSLogs/*"]
+    resources = ["${aws_s3_bucket.alb_logs[0].arn}/*"]
   }
 }
 
@@ -95,10 +119,31 @@ resource "aws_s3_bucket_policy" "allow_elb_logging" {
   policy = data.aws_iam_policy_document.allow_alb_logging[0].json
 }
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl_association
-resource "aws_wafv2_web_acl_association" "this" {
-  count = var.waf_acl_arn != "" ? 1 : 0
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
+resource "aws_s3_bucket" "alb_logs" {
+  count = var.enable_logging ? 1 : 0
 
-  resource_arn = aws_lb.this.arn
-  web_acl_arn  = var.waf_acl_arn
+  bucket_prefix = "alb-logs-${var.name}-"
+  force_destroy = true
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration
+resource "aws_s3_bucket_lifecycle_configuration" "this" {
+  count = var.enable_logging ? 1 : 0
+
+  bucket = aws_s3_bucket.alb_logs[0].id
+
+  rule {
+    id = "all_objects"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
+    }
+
+    expiration {
+      days = var.logs_expiration_days != 0 ? var.logs_expiration_days : null
+    }
+
+    status = var.enable_logging ? "Enabled" : "Disabled"
+  }
 }

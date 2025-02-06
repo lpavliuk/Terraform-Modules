@@ -98,6 +98,12 @@ variable "manage_master_user_pswd" {
   description = "Enable automatic RDS management of the master user password in AWS Secret Manager"
 }
 
+variable "enabled_iam_authentication" {
+  type        = bool
+  default     = false
+  description = "Enable IAM DB Authentication"
+}
+
 variable "vpc_id" {
   type        = string
   nullable    = false

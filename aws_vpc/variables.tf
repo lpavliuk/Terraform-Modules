@@ -23,3 +23,15 @@ variable "domain_zone_name" {
   default     = null
   description = "Private Hosted Zone Name that will be created in Route53"
 }
+
+variable "enable_flow_logs" {
+  type        = bool
+  default     = false
+  description = "Enable Flow Logs to CloudWatch"
+}
+
+variable "flow_logs_retention_in_days" {
+  type        = number
+  default     = 7
+  description = "Retention in days for Flow Logs in CloudWatch"
+}

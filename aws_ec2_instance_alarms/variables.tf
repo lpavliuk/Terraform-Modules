@@ -40,8 +40,32 @@ variable "enable_cpu_utilization_alarms" {
   description = "Create CPU Utilization alarms"
 }
 
+variable "enable_mem_utilization_alarms" {
+  type        = bool
+  default     = true
+  description = "Create Memory Utilization alarms"
+}
+
+variable "enable_disk_utilization_alarms" {
+  type        = bool
+  default     = true
+  description = "Create Disk Utilization alarms"
+}
+
 variable "cpu_utilization_too_high_threshold" {
   type        = number
   default     = 80 # percent
   description = "Percentage threshold of CPU utilization alarm"
+}
+
+variable "mem_utilization_too_high_threshold" {
+  type        = number
+  default     = 80 # percent
+  description = "Percentage threshold of Memory utilization alarm"
+}
+
+variable "disk_utilization_too_high_threshold" {
+  type        = number
+  default     = 80 # percent
+  description = "Percentage threshold of Disk utilization alarm"
 }

@@ -33,3 +33,9 @@ output "backup_vault_name" {
   sensitive   = false
   description = "Backup Vault Name"
 }
+
+output "iam_role_arn" {
+  value       = aws_iam_role.this.arn
+  sensitive   = false
+  description = "Backup Plan IAM Role"
+}

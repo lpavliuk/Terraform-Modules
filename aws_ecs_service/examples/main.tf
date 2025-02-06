@@ -12,7 +12,7 @@ module "ecs_service" {
       name                         = "api"
       links                        = ["mysql"]
       port                         = 52150
-      image                        = "gitlab.example.com/group/api:latest"
+      image                        = "registry.example.com/api:dev"
       private_registry_credentials = {
         username = var.gitlab_token_username
         password = var.gitlab_token_secret

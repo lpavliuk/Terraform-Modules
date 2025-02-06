@@ -49,8 +49,8 @@ module "vpc_peering" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_requester_vpc"></a> [requester\_vpc](#input\_requester\_vpc) | VPC Details of the Requester | <pre>object({<br>    id                  = string<br>    name                = string<br>    account_id          = string<br>    region              = string<br>    cidr                = string<br>    route_table_ids     = list(string)<br>    vpc_domain_zone_ids = optional(list(string), [])<br>  })</pre> | n/a | yes |
-| <a name="input_accepter_vpc"></a> [accepter\_vpc](#input\_accepter\_vpc) | VPC Details of the Accepter | <pre>object({<br>    id                  = string<br>    name                = string<br>    account_id          = string<br>    region              = string<br>    cidr                = string<br>    route_table_ids     = list(string)<br>    vpc_domain_zone_ids = optional(list(string), [])<br>  })</pre> | n/a | yes |
+| <a name="input_requester_vpc"></a> [requester\_vpc](#input\_requester\_vpc) | VPC Details of the Requester | <pre>object({<br/>    id                  = string<br/>    name                = string<br/>    account_id          = string<br/>    region              = string<br/>    cidr                = string<br/>    route_table_ids     = list(string)<br/>    vpc_domain_zone_ids = optional(list(string), [])<br/>  })</pre> | n/a | yes |
+| <a name="input_accepter_vpc"></a> [accepter\_vpc](#input\_accepter\_vpc) | VPC Details of the Accepter | <pre>object({<br/>    id                  = string<br/>    name                = string<br/>    account_id          = string<br/>    region              = string<br/>    cidr                = string<br/>    route_table_ids     = list(string)<br/>    vpc_domain_zone_ids = optional(list(string), [])<br/>  })</pre> | n/a | yes |
 
 ## Outputs
 

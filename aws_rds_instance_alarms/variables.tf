@@ -126,13 +126,13 @@ variable "disk_free_storage_space_threshold" {
 
 variable "freeable_memory_too_low_threshold" {
   type        = number
-  default     = 100 # Megabytes
+  default     = 25 # Megabytes
   description = "The minimum amount of available random access memory in Megabytes"
 }
 
 variable "memory_swap_usage_too_high_threshold" {
   type        = number
-  default     = 256 # Megabytes
+  default     = 1000 # Megabytes
   description = "The maximum amount of swap space used on the DB instance in Megabytes"
 }
 

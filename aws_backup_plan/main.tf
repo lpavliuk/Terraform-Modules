@@ -100,29 +100,37 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "this" {
   name_prefix        = "backup-plan-${var.name}-"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
 
-  inline_policy { # requires for EC2 Instances restore: https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-ec2.html
-    name = "PassRole"
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policies_exclusive
+resource "aws_iam_role_policies_exclusive" "this" {
+  role_name    = aws_iam_role.this.name
+  policy_names = [aws_iam_role_policy.this.name]
+}
 
-    policy = jsonencode({
-      Version = "2012-10-17"
-      Statement = [{
-        Sid = "PassRole"
-        Effect = "Allow"
-        Action =  [
-          "iam:PassRole"
-        ],
-        Resource = [
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
-        ],
-        Condition = {
-          "StringEquals" = {
-            "iam:PassedToService": "ec2.amazonaws.com"
-          }
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy
+resource "aws_iam_role_policy" "this" {
+  name_prefix = "role-policy-"
+  role        = aws_iam_role.this.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid = "PassRole" # requires for EC2 Instances restore: https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-ec2.html
+      Effect = "Allow"
+      Action =  [
+        "iam:PassRole"
+      ],
+      Resource = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"
+      ],
+      Condition = {
+        "StringEquals" = {
+          "iam:PassedToService": "ec2.amazonaws.com"
         }
-      }]
-    })
-  }
+      }
+    }]
+  })
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment

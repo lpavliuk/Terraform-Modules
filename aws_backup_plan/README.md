@@ -55,18 +55,18 @@ module "backup_plan" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.22 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.72 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name"></a> [name](#input\_name) | Codename for this backup plan | `string` | n/a | yes |
-| <a name="input_rules"></a> [rules](#input\_rules) | List of backup plan rules.<br>`start_window_min`: >= 60 mins<br><br>[schedule\_cron expressions reference](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-cron-expressions.html) | <pre>list(object({<br>    name                     = string<br>    schedule_cron            = string<br>    start_window_mins        = optional(string)<br>    completion_window_mins   = optional(string)<br>    enable_continuous_backup = optional(string)<br>    recovery_point_tags      = optional(map(string))<br>    lifecycle                = optional(object({<br>      cold_storage_after_days = optional(number)<br>      delete_after_days       = optional(number)<br>    }))<br>    copy_action              = optional(object({<br>      destination_vault_arn = string<br>      lifecycle             = optional(object({<br>        cold_storage_after_days = optional(number)<br>        delete_after_days       = optional(number)<br>      }))<br>    }))<br>  }))</pre> | n/a | yes |
+| <a name="input_rules"></a> [rules](#input\_rules) | List of backup plan rules.<br/>`start_window_min`: >= 60 mins<br/><br/>[schedule\_cron expressions reference](https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-cron-expressions.html) | <pre>list(object({<br/>    name                     = string<br/>    schedule_cron            = string<br/>    start_window_mins        = optional(string)<br/>    completion_window_mins   = optional(string)<br/>    enable_continuous_backup = optional(string)<br/>    recovery_point_tags      = optional(map(string))<br/>    lifecycle                = optional(object({<br/>      cold_storage_after_days = optional(number)<br/>      delete_after_days       = optional(number)<br/>    }))<br/>    copy_action              = optional(object({<br/>      destination_vault_arn = string<br/>      lifecycle             = optional(object({<br/>        cold_storage_after_days = optional(number)<br/>        delete_after_days       = optional(number)<br/>      }))<br/>    }))<br/>  }))</pre> | n/a | yes |
 | <a name="input_backup_resources"></a> [backup\_resources](#input\_backup\_resources) | List of resources ARNs that get backup by this plan | `list(string)` | `[]` | no |
 | <a name="input_backup_not_resources"></a> [backup\_not\_resources](#input\_backup\_not\_resources) | List of resources ARNs this plan will ignore | `list(string)` | `[]` | no |
-| <a name="input_backup_selection_tags"></a> [backup\_selection\_tags](#input\_backup\_selection\_tags) | List of tags resource of which will get backup by this plan. Available `type`:<br>  - `STRINGEQUALS`<br>  - `STRINGLIKE`<br>  - `STRINGNOTEQUALS`<br>  - `STRINGNOTLIKE` | <pre>list(object({<br>    type  = string<br>    key   = string<br>    value = string<br>  }))</pre> | `[]` | no |
-| <a name="input_notifications_events"></a> [notifications\_events](#input\_notifications\_events) | List of the notification events. Available:<br>  - `BACKUP_JOB_STARTED`<br>  - `BACKUP_JOB_COMPLETED`<br>  - `BACKUP_JOB_FAILED`<br>  - `COPY_JOB_STARTED`<br>  - `COPY_JOB_SUCCESSFUL`<br>  - `COPY_JOB_FAILED`<br>  - `RESTORE_JOB_STARTED`<br>  - `RESTORE_JOB_COMPLETED`<br>  - `RECOVERY_POINT_MODIFIED`<br>  - `S3_BACKUP_OBJECT_FAILED`<br>  - `S3_RESTORE_OBJECT_FAILED`<br><br>[Backup Vault Notifications](https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-notifications.html#backup-notifications-section) | `list(string)` | `[]` | no |
+| <a name="input_backup_selection_tags"></a> [backup\_selection\_tags](#input\_backup\_selection\_tags) | List of tags resource of which will get backup by this plan. Available `type`:<br/>  - `STRINGEQUALS`<br/>  - `STRINGLIKE`<br/>  - `STRINGNOTEQUALS`<br/>  - `STRINGNOTLIKE` | <pre>list(object({<br/>    type  = string<br/>    key   = string<br/>    value = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_notifications_events"></a> [notifications\_events](#input\_notifications\_events) | List of the notification events. Available:<br/>  - `BACKUP_JOB_STARTED`<br/>  - `BACKUP_JOB_COMPLETED`<br/>  - `BACKUP_JOB_FAILED`<br/>  - `COPY_JOB_STARTED`<br/>  - `COPY_JOB_SUCCESSFUL`<br/>  - `COPY_JOB_FAILED`<br/>  - `RESTORE_JOB_STARTED`<br/>  - `RESTORE_JOB_COMPLETED`<br/>  - `RECOVERY_POINT_MODIFIED`<br/>  - `S3_BACKUP_OBJECT_FAILED`<br/>  - `S3_RESTORE_OBJECT_FAILED`<br/><br/>[Backup Vault Notifications](https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-notifications.html#backup-notifications-section) | `list(string)` | `[]` | no |
 | <a name="input_notifications_sns_topic_arn"></a> [notifications\_sns\_topic\_arn](#input\_notifications\_sns\_topic\_arn) | SNS topic ARN for all notifications are defined in `notifications_events` | `string` | `""` | no |
 
 ## Outputs
@@ -79,6 +79,7 @@ module "backup_plan" {
 | <a name="output_backup_vault_id"></a> [backup\_vault\_id](#output\_backup\_vault\_id) | Backup Vault ID |
 | <a name="output_backup_vault_arn"></a> [backup\_vault\_arn](#output\_backup\_vault\_arn) | Backup Vault ARN |
 | <a name="output_backup_vault_name"></a> [backup\_vault\_name](#output\_backup\_vault\_name) | Backup Vault Name |
+| <a name="output_iam_role_arn"></a> [iam\_role\_arn](#output\_iam\_role\_arn) | Backup Plan IAM Role |
 
 ## Resources
 
@@ -90,6 +91,8 @@ module "backup_plan" {
 | [aws_backup_vault_notifications.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault_notifications) | resource |
 | [aws_cloudwatch_metric_alarm.backup_jobs_failed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm) | resource |
 | [aws_iam_role.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policies_exclusive.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policies_exclusive) | resource |
+| [aws_iam_role_policy.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_iam_role_policy_attachment.this_iam_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |

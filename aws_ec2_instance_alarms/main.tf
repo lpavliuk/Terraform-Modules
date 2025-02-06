@@ -9,7 +9,29 @@ locals {
       threshold           : var.cpu_utilization_too_high_threshold,
       evaluation_periods  : var.evaluation_periods
       description         : "Average EC2 CPU utilization too high"
-    }
+    },
+    {
+      codename            : "mem_utilization_too_high",
+      name                : "${var.name_prefix}ec2-${var.ec2_instance_codename}-highMemUtilization",
+      is_enabled          : var.enable_mem_utilization_alarms
+      namespace           : "CWAgent/EC2",
+      metric_name         : "mem_used_percent",
+      comparison_operator : "GreaterThanThreshold",
+      threshold           : var.mem_utilization_too_high_threshold,
+      evaluation_periods  : var.evaluation_periods
+      description         : "Average EC2 Memory utilization too high"
+    },
+    {
+      codename            : "disk_utilization_too_high",
+      name                : "${var.name_prefix}ec2-${var.ec2_instance_codename}-highDiskUtilization",
+      is_enabled          : var.enable_disk_utilization_alarms
+      namespace           : "CWAgent/EC2",
+      metric_name         : "disk_used_percent",
+      comparison_operator : "GreaterThanThreshold",
+      threshold           : var.disk_utilization_too_high_threshold,
+      evaluation_periods  : var.evaluation_periods
+      description         : "Average EC2 Disk utilization too high"
+    },
   ]
 }
 
@@ -22,7 +44,7 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   comparison_operator = lookup(each.value, "comparison_operator", null)
   evaluation_periods  = lookup(each.value, "evaluation_periods", null)
   metric_name         = lookup(each.value, "metric_name", null)
-  namespace           = "AWS/EC2"
+  namespace           = lookup(each.value, "namespace", "AWS/EC2")
   period              = var.statistics_period
   statistic           = "Average"
   threshold           = lookup(each.value, "threshold", null)

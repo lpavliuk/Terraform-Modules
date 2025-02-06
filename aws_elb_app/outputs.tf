@@ -25,19 +25,13 @@ output "zone_id" {
 output "http_listener_arn" {
   value       = aws_lb_listener.http.arn
   sensitive   = false
-  description = "ARN of the HTTP Listener attached to the ALB"
+  description = "ARN of the HTTP (:80) Listener attached to the ALB"
 }
 
 output "https_listener_arn" {
-  value       = aws_lb_listener.https.arn
+  value       = var.https_certificate_arn == null ? null : aws_lb_listener.https[0].arn
   sensitive   = false
-  description = "ARN of the HTTPS Listener attached to the ALB"
-}
-
-output "waf_acl_arn" {
-  value       = var.waf_acl_arn
-  sensitive   = false
-  description = "ARN of AWS WAF ACL attached to the ALB"
+  description = "ARN of the HTTPS (:443) Listener attached to the ALB"
 }
 
 output "security_group_id" {

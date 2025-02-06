@@ -1,10 +1,14 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
 resource "aws_s3_bucket" "this" {
-  bucket_prefix = var.bucket_prefix
+  bucket        = var.name != null ? substr(var.name, 0, 62) : null
+  bucket_prefix = var.name == null ? substr(var.bucket_prefix, 0, 36) : null
   force_destroy = var.force_destroy
 
   lifecycle {
-    ignore_changes = [bucket_prefix]
+    precondition {
+      error_message = "Either name or bucket_prefix must be defined!"
+      condition     = var.name != null || var.bucket_prefix != null
+    }
   }
 }
 
@@ -23,21 +27,19 @@ resource "aws_s3_bucket_ownership_controls" "this" {
   bucket = aws_s3_bucket.this.id
 
   rule {
-    object_ownership = var.is_public ? "BucketOwnerPreferred" : "BucketOwnerEnforced"
+    object_ownership = var.is_public ? "BucketOwnerPreferred" : "ObjectWriter"
   }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_acl
 resource "aws_s3_bucket_acl" "this" {
-  count = var.is_public ? 1 : 0
-
   depends_on = [
     aws_s3_bucket_ownership_controls.this,
     aws_s3_bucket_public_access_block.this,
   ]
 
   bucket = aws_s3_bucket.this.id
-  acl    = "public-read"
+  acl    = var.is_public ? "public-read" : var.acl
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning
@@ -84,7 +86,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
       }
     }
 
-    status = var.enable_versioning ? "Enabled" : "Disabled"
+    status = var.enable_versioning || var.current_version_expiration_days != 0 ? "Enabled" : "Disabled"
   }
 }
 

@@ -1,43 +1,44 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance
 resource "aws_db_instance" "this" {
-  apply_immediately               = true
+  apply_immediately                   = true
 
-  identifier                      = var.name
-  instance_class                  = var.instance_type
+  identifier                          = var.name
+  instance_class                      = var.instance_type
 
-  allocated_storage               = var.storage_size
-  max_allocated_storage           = var.max_storage_size
-  storage_type                    = var.storage_type
-  storage_encrypted               = true
+  allocated_storage                   = var.storage_size
+  max_allocated_storage               = var.max_storage_size
+  storage_type                        = var.storage_type
+  storage_encrypted                   = true
 
-  engine                          = var.engine
-  engine_version                  = var.engine_version
+  engine                              = var.engine
+  engine_version                      = var.engine_version
 
-  username                        = var.master_username
-  password                        = var.manage_master_user_pswd ? null : var.master_password
-  manage_master_user_password     = var.manage_master_user_pswd ? true : null
-  #master_user_secret_kms_key_id   = "" # the default KMS key for your AWS account is used
+  username                            = var.master_username
+  password                            = var.manage_master_user_pswd ? null : var.master_password
+  manage_master_user_password         = var.manage_master_user_pswd ? true : null
+  #master_user_secret_kms_key_id      = "" # the default KMS key for your AWS account is used
+  iam_database_authentication_enabled = var.enabled_iam_authentication
 
-  vpc_security_group_ids          = [aws_security_group.this.id]
-  db_subnet_group_name            = var.rds_subnet_group_id
-  parameter_group_name            = aws_db_parameter_group.this.name
+  vpc_security_group_ids              = [aws_security_group.this.id]
+  db_subnet_group_name                = var.rds_subnet_group_id
+  parameter_group_name                = aws_db_parameter_group.this.name
 
-  auto_minor_version_upgrade      = var.enable_auto_minor_version_upgrade
-  maintenance_window              = var.maintenance_window_utc_period
+  auto_minor_version_upgrade          = var.enable_auto_minor_version_upgrade
+  maintenance_window                  = var.maintenance_window_utc_period
 
-  backup_retention_period         = var.backup_retention_period_days
-  backup_window                   = var.backup_window_utc_period
+  backup_retention_period             = var.backup_retention_period_days
+  backup_window                       = var.backup_window_utc_period
 
-  monitoring_interval             = var.enable_enhanced_monitoring ? 15 : 0 # in seconds
-  monitoring_role_arn             = var.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
+  monitoring_interval                 = var.enable_enhanced_monitoring ? 15 : 0 # in seconds
+  monitoring_role_arn                 = var.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
 
-  publicly_accessible             = var.is_private ? false : true
-  multi_az                        = var.multi_az
-  skip_final_snapshot             = true
-  ca_cert_identifier              = var.ca_cert_identifier
+  publicly_accessible                 = var.is_private ? false : true
+  multi_az                            = var.multi_az
+  skip_final_snapshot                 = true
+  ca_cert_identifier                  = var.ca_cert_identifier
 
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.MySQLDB.PublishtoCloudWatchLogs.html
-  enabled_cloudwatch_logs_exports = length(var.cloudwatch_logs_exports) > 0 ? var.cloudwatch_logs_exports : null
+  enabled_cloudwatch_logs_exports     = length(var.cloudwatch_logs_exports) > 0 ? var.cloudwatch_logs_exports : null
 
   lifecycle {
     precondition {

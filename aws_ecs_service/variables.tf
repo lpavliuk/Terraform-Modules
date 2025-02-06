@@ -170,7 +170,7 @@ variable "containers" {
   description = <<-EOF
     [Amazon ECS - Container Definitions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions)
 
-    `image` attribute must be defined as **Image_URL:TAG**. For example: `"registry.gitlab.com/group/webserver:latest"`.
+    `image` attribute must be defined as **Image_URL:TAG**. For example: `"registry.example.com/webserver:latest"`.
 
     **NOTE!** if `host_port` attribute is not defined, the port will be assigned automatically!
 

@@ -17,6 +17,15 @@ module "ecr_repository" {
   enable_image_tag_immutability = true
   enable_scanning_on_push       = true
   repository_policy_json        = data.aws_iam_policy_document.ecr_repository_policy.json
+  lifecycle_policy_rules        = [
+    {
+      description     = "Expire untagged images older than 14 days"
+      tag_status      = "untagged",
+      count_type      = "sinceImagePushed",
+      count_unit      = "days",
+      count_number    = 14
+    }
+  ]
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
@@ -55,17 +64,17 @@ data "aws_iam_policy_document" "ecr_repository_policy" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.22 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.72 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | Name of the ECR Repository Cluster<br><br>**NOTE!** The repository name must start with a letter and<br>can only contain lowercase letters, numbers, hyphens, underscores,<br>and forward slashes. | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name of the ECR Repository Cluster<br/><br/>**NOTE!** The repository name must start with a letter and<br/>can only contain lowercase letters, numbers, hyphens, underscores,<br/>and forward slashes. | `string` | n/a | yes |
 | <a name="input_enable_image_tag_immutability"></a> [enable\_image\_tag\_immutability](#input\_enable\_image\_tag\_immutability) | Enable image tag immutability | `bool` | `false` | no |
 | <a name="input_enable_scanning_on_push"></a> [enable\_scanning\_on\_push](#input\_enable\_scanning\_on\_push) | Enable scanning on push | `bool` | `false` | no |
-| <a name="input_repository_policy_json"></a> [repository\_policy\_json](#input\_repository\_policy\_json) | ECR Repository Policy<br><br>[More details here.](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository_policy) | `string` | `null` | no |
-| <a name="input_lifecycle_policy_json"></a> [lifecycle\_policy\_json](#input\_lifecycle\_policy\_json) | ECR Repository Lifecycle Policy<br><br>[More details here.](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_lifecycle_policy) | `string` | `null` | no |
+| <a name="input_repository_policy_json"></a> [repository\_policy\_json](#input\_repository\_policy\_json) | ECR Repository Policy<br/><br/>[More details here.](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository_policy) | `string` | `null` | no |
+| <a name="input_lifecycle_policy_rules"></a> [lifecycle\_policy\_rules](#input\_lifecycle\_policy\_rules) | Lifecycle Policy Rules.<br/><br/>[Lifecycle policy properties in Amazon ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_parameters.html)<br/>[Examples of lifecycle policies in Amazon ECR.](https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html)<br/>[More details here.](https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) | <pre>list(object({<br/>    description          = optional(string)<br/>    tag_status           = string<br/>    tag_prefix_list      = optional(list(string))<br/>    count_type           = string<br/>    count_unit           = optional(string)<br/>    count_number         = number<br/>  }))</pre> | `null` | no |
 
 ## Outputs
 
@@ -85,4 +94,5 @@ data "aws_iam_policy_document" "ecr_repository_policy" {
 | [aws_ecr_repository.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository) | resource |
 | [aws_ecr_repository_policy.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository_policy) | resource |
 | [aws_kms_key.ecr_kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [aws_ecr_lifecycle_policy_document.rules](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ecr_lifecycle_policy_document) | data source |
 <!-- END_TF_DOCS -->

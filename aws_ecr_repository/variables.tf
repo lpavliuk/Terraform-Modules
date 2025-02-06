@@ -44,12 +44,21 @@ variable "repository_policy_json" {
   EOF
 }
 
-variable "lifecycle_policy_json" {
-  type        = string
+variable "lifecycle_policy_rules" {
+  type        = list(object({
+    description          = optional(string)
+    tag_status           = string
+    tag_prefix_list      = optional(list(string))
+    count_type           = string
+    count_unit           = optional(string)
+    count_number         = number
+  }))
   default     = null
   description = <<-EOF
-    ECR Repository Lifecycle Policy
+    Lifecycle Policy Rules.
 
-    [More details here.](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_lifecycle_policy)
+    [Lifecycle policy properties in Amazon ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_parameters.html)
+    [Examples of lifecycle policies in Amazon ECR.](https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html)
+    [More details here.](https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters)
   EOF
 }

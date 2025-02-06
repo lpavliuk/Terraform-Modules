@@ -48,30 +48,31 @@ module "rds_instance" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | RDS Instance Name.<br><br>**NOTE!**  Must contain 1 to 63 alphanumeric characters or hyphens (`-`).<br>[Naming constraints in Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints) | `string` | n/a | yes |
-| <a name="input_engine"></a> [engine](#input\_engine) | Database Engine. Available engines:<br>  - `mysql`<br>  - `aurora-mysql` | `string` | `"mysql"` | no |
+| <a name="input_name"></a> [name](#input\_name) | RDS Instance Name.<br/><br/>**NOTE!**  Must contain 1 to 63 alphanumeric characters or hyphens (`-`).<br/>[Naming constraints in Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints) | `string` | n/a | yes |
+| <a name="input_engine"></a> [engine](#input\_engine) | Database Engine. Available engines:<br/>  - `mysql`<br/>  - `aurora-mysql` | `string` | `"mysql"` | no |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Engine Version | `string` | `"8.0.28"` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | RDS Instance Type (e.g. `db.t3.micro`) | `string` | n/a | yes |
 | <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | Storage Type (e.g. `gp3`) | `string` | n/a | yes |
 | <a name="input_storage_size"></a> [storage\_size](#input\_storage\_size) | Storage size in GB | `number` | `20` | no |
 | <a name="input_max_storage_size"></a> [max\_storage\_size](#input\_max\_storage\_size) | Max allocated storage size in GB | `number` | `40` | no |
 | <a name="input_master_username"></a> [master\_username](#input\_master\_username) | Master Username | `string` | n/a | yes |
-| <a name="input_master_password"></a> [master\_password](#input\_master\_password) | Master Password.<br><br>**NOTE!** Required if `manage_master_user_pswd` is `false` | `string` | `null` | no |
+| <a name="input_master_password"></a> [master\_password](#input\_master\_password) | Master Password.<br/><br/>**NOTE!** Required if `manage_master_user_pswd` is `false` | `string` | `null` | no |
 | <a name="input_manage_master_user_pswd"></a> [manage\_master\_user\_pswd](#input\_manage\_master\_user\_pswd) | Enable automatic RDS management of the master user password in AWS Secret Manager | `bool` | n/a | yes |
+| <a name="input_enabled_iam_authentication"></a> [enabled\_iam\_authentication](#input\_enabled\_iam\_authentication) | Enable IAM DB Authentication | `bool` | `false` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID the RDS Instance will be provisioned in | `string` | n/a | yes |
 | <a name="input_rds_subnet_group_id"></a> [rds\_subnet\_group\_id](#input\_rds\_subnet\_group\_id) | RDS Subnet Group ID the RDS Instance will be provisioned in | `string` | n/a | yes |
 | <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | CA Certificate of the database | `string` | `"rds-ca-rsa4096-g1"` | no |
 | <a name="input_is_private"></a> [is\_private](#input\_is\_private) | Enable private mode of the RDS Instance (accessible only from VPC) | `bool` | n/a | yes |
 | <a name="input_multi_az"></a> [multi\_az](#input\_multi\_az) | Enable Multi-AZ for the RDS Instance | `bool` | n/a | yes |
 | <a name="input_backup_retention_period_days"></a> [backup\_retention\_period\_days](#input\_backup\_retention\_period\_days) | Automatic Backup retention period in days. NOTE: `0` days disables the automatic backups. | `number` | `7` | no |
-| <a name="input_backup_window_utc_period"></a> [backup\_window\_utc\_period](#input\_backup\_window\_utc\_period) | The daily time range of the automatic backups (in UTC). Default: `14:00-16:00` (01:00-03:00 AEDT)<br>Must not overlap `maintenance_window_utc_period` parameter | `string` | `"14:00-16:00"` | no |
+| <a name="input_backup_window_utc_period"></a> [backup\_window\_utc\_period](#input\_backup\_window\_utc\_period) | The daily time range of the automatic backups (in UTC). Default: `14:00-16:00` (01:00-03:00 AEDT)<br/>Must not overlap `maintenance_window_utc_period` parameter | `string` | `"14:00-16:00"` | no |
 | <a name="input_enable_enhanced_monitoring"></a> [enable\_enhanced\_monitoring](#input\_enable\_enhanced\_monitoring) | Enable Enhanced Monitoring | `bool` | `false` | no |
 | <a name="input_enable_auto_minor_version_upgrade"></a> [enable\_auto\_minor\_version\_upgrade](#input\_enable\_auto\_minor\_version\_upgrade) | Enable Auto Minor Version Upgrade | `bool` | `false` | no |
-| <a name="input_maintenance_window_utc_period"></a> [maintenance\_window\_utc\_period](#input\_maintenance\_window\_utc\_period) | The daily time range of the maintenance (in UTC). Default: `Sat:16:00-Sat:18:00` (Sun:03:00-Sun:05:00 AEDT)<br>Must not overlap `backup_window_utc_period` parameter | `string` | `"Sat:16:00-Sat:18:00"` | no |
+| <a name="input_maintenance_window_utc_period"></a> [maintenance\_window\_utc\_period](#input\_maintenance\_window\_utc\_period) | The daily time range of the maintenance (in UTC). Default: `Sat:16:00-Sat:18:00` (Sun:03:00-Sun:05:00 AEDT)<br/>Must not overlap `backup_window_utc_period` parameter | `string` | `"Sat:16:00-Sat:18:00"` | no |
 | <a name="input_cloudwatch_logs_exports"></a> [cloudwatch\_logs\_exports](#input\_cloudwatch\_logs\_exports) | Enable publishing MySQL logs to Amazon CloudWatch Logs. Available: `error`, `general` and `slowquery` | `list(string)` | `[]` | no |
 | <a name="input_cloudwatch_logs_retention_period_days"></a> [cloudwatch\_logs\_retention\_period\_days](#input\_cloudwatch\_logs\_retention\_period\_days) | CloudWatch Logs retention period in days. Available: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365. | `number` | `30` | no |
 | <a name="input_aws_cli_profile"></a> [aws\_cli\_profile](#input\_aws\_cli\_profile) | AWS CLI Profile used for this module. Used to execute AWS CLI `local-exec` commands absent in Terraform | `string` | `null` | no |
-| <a name="input_db_parameters"></a> [db\_parameters](#input\_db\_parameters) | Parameters are added to the DB Parameter Group.<br><br>- [MySQL server system parameters](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html)<br>- [Aurora MySQL configuration parameters](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Reference.ParameterGroups.html) | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | `[]` | no |
+| <a name="input_db_parameters"></a> [db\_parameters](#input\_db\_parameters) | Parameters are added to the DB Parameter Group.<br/><br/>- [MySQL server system parameters](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html)<br/>- [Aurora MySQL configuration parameters](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Reference.ParameterGroups.html) | <pre>list(object({<br/>    name  = string<br/>    value = string<br/>  }))</pre> | `[]` | no |
 
 ## Outputs
 

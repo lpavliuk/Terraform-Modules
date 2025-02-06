@@ -55,5 +55,11 @@ output "iam_role_name" {
 output "iam_profile" {
   value       = aws_instance.this.iam_instance_profile
   sensitive   = false
-  description = "IAM Profile attached to the Instance"
+  description = "IAM Profile Name attached to the Instance"
+}
+
+output "iam_profile_arn" {
+  value       = aws_iam_instance_profile.this_instance.arn
+  sensitive   = false
+  description = "IAM Profile ARN attached to the Instance"
 }

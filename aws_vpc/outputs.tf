@@ -57,3 +57,9 @@ output "domain_zone_name" {
   sensitive   = false
   description = "Route53 Private Hosted Zone Name"
 }
+
+output "flow_logs_group" {
+  value       = var.enable_flow_logs ? aws_flow_log.this[0].log_destination : null
+  sensitive   = false
+  description = "CloudWatch Log Group for VPC Flow Logs"
+}

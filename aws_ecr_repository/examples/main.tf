@@ -6,6 +6,15 @@ module "ecr_repository" {
   enable_image_tag_immutability = true
   enable_scanning_on_push       = true
   repository_policy_json        = data.aws_iam_policy_document.ecr_repository_policy.json
+  lifecycle_policy_rules        = [
+    {
+      description     = "Expire untagged images older than 14 days"
+      tag_status      = "untagged",
+      count_type      = "sinceImagePushed",
+      count_unit      = "days",
+      count_number    = 14
+    }
+  ]
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document

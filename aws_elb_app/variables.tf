@@ -19,7 +19,13 @@ variable "subnet_ids" {
 variable "enable_logging" {
   type        = bool
   default     = false
-  description = "Enable the ALB traffic logging to S3 bucket"
+  description = "Enable the ALB Access and Connection Logging to S3 bucket"
+}
+
+variable "logs_expiration_days" {
+  type        = number
+  default     = 7
+  description = "Retention period of the ALB Access and Connection Logs in S3 bucket"
 }
 
 variable "enable_deletion_protection" {
@@ -49,18 +55,16 @@ variable "xff_header_processing_mode" {
 
 variable "https_certificate_arn" {
   type        = string
-  nullable    = false
-  description = "ACM Certificate ARN for HTTPS Listener"
+  default     = null
+  description = <<-EOT
+      ACM Certificate ARN for HTTPS (:443) Listener.
+
+      **NOTE!** Creates HTTPS (:443) Listener
+  EOT
 }
 
 variable "extra_sg_ids" {
   type        = list(string)
   default     = []
   description = "Additional Security Group IDs attached to the ALB except for default Security Group"
-}
-
-variable "waf_acl_arn" {
-  type        = string
-  default     = ""
-  description = "ARN of the WAF attached to the ALB (enables WAF)"
 }

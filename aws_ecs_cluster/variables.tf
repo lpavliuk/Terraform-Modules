@@ -72,3 +72,9 @@ variable "node_extra_tags" {
   default     = []
   description = "Node Extra Tags"
 }
+
+variable "enable_session_manager" {
+  type        = bool
+  default     = false
+  description = "Enable Session Manager for the ECS Nodes"
+}

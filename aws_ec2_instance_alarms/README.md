@@ -59,7 +59,11 @@ module "ec2_instance_alarms" {
 | <a name="input_evaluation_periods"></a> [evaluation\_periods](#input\_evaluation\_periods) | Evaluation period over which to use when triggering alarms | `number` | `5` | no |
 | <a name="input_statistics_period"></a> [statistics\_period](#input\_statistics\_period) | Number of seconds that make each statistic period | `number` | `60` | no |
 | <a name="input_enable_cpu_utilization_alarms"></a> [enable\_cpu\_utilization\_alarms](#input\_enable\_cpu\_utilization\_alarms) | Create CPU Utilization alarms | `bool` | `true` | no |
+| <a name="input_enable_mem_utilization_alarms"></a> [enable\_mem\_utilization\_alarms](#input\_enable\_mem\_utilization\_alarms) | Create Memory Utilization alarms | `bool` | `true` | no |
+| <a name="input_enable_disk_utilization_alarms"></a> [enable\_disk\_utilization\_alarms](#input\_enable\_disk\_utilization\_alarms) | Create Disk Utilization alarms | `bool` | `true` | no |
 | <a name="input_cpu_utilization_too_high_threshold"></a> [cpu\_utilization\_too\_high\_threshold](#input\_cpu\_utilization\_too\_high\_threshold) | Percentage threshold of CPU utilization alarm | `number` | `80` | no |
+| <a name="input_mem_utilization_too_high_threshold"></a> [mem\_utilization\_too\_high\_threshold](#input\_mem\_utilization\_too\_high\_threshold) | Percentage threshold of Memory utilization alarm | `number` | `80` | no |
+| <a name="input_disk_utilization_too_high_threshold"></a> [disk\_utilization\_too\_high\_threshold](#input\_disk\_utilization\_too\_high\_threshold) | Percentage threshold of Disk utilization alarm | `number` | `80` | no |
 
 ## Outputs
 

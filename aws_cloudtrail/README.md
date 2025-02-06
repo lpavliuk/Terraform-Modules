@@ -51,7 +51,7 @@ module "cloudtrail" {
 | <a name="input_cloudwatch_log_group_retention_days"></a> [cloudwatch\_log\_group\_retention\_days](#input\_cloudwatch\_log\_group\_retention\_days) | Retention period of CloudWatch Log Group in days | `number` | `7` | no |
 | <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | S3 Bucket Name to store logs | `string` | `""` | no |
 | <a name="input_s3_bucket_key_prefix"></a> [s3\_bucket\_key\_prefix](#input\_s3\_bucket\_key\_prefix) | S3 Bucket Key Prefix to store logs | `string` | `""` | no |
-| <a name="input_is_organization_trail"></a> [is\_organization\_trail](#input\_is\_organization\_trail) | Defines whether it is an organization trail.<br>**NOTE: that organization trails can ONLY be created in organization<br>master accounts; this will fail if run in a non-master account** | `bool` | `false` | no |
+| <a name="input_is_organization_trail"></a> [is\_organization\_trail](#input\_is\_organization\_trail) | Defines whether it is an organization trail.<br/>**NOTE: that organization trails can ONLY be created in organization<br/>master accounts; this will fail if run in a non-master account** | `bool` | `false` | no |
 | <a name="input_is_multi_region_trail"></a> [is\_multi\_region\_trail](#input\_is\_multi\_region\_trail) | Whether the trail is created in the current region or in all regions | `bool` | `true` | no |
 | <a name="input_include_global_service_events"></a> [include\_global\_service\_events](#input\_include\_global\_service\_events) | Whether the trail is publishing events from global services such as IAM to the log files | `bool` | `true` | no |
 | <a name="input_sns_topic_arn"></a> [sns\_topic\_arn](#input\_sns\_topic\_arn) | SNS Topic ARN for notifications | `string` | `""` | no |

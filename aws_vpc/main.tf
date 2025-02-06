@@ -54,3 +54,75 @@ resource "aws_route53_zone" "this" {
   }
 }
 
+# =======================================================
+# ALB Logging
+# =======================================================
+# https://registry.terraform.io/providers/hashicorp/aws/5.54.1/docs/resources/flow_log
+resource "aws_flow_log" "this" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  iam_role_arn    = aws_iam_role.flow_logs[0].arn
+  log_destination = aws_cloudwatch_log_group.flow_logs[0].arn
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.this.id
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/aws_cloudwatch_log_group
+resource "aws_cloudwatch_log_group" "flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  name              = "/vpc/${var.name}/flow-logs"
+  retention_in_days = var.flow_logs_retention_in_days
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
+data "aws_iam_policy_document" "assume_role_vpc_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["vpc-flow-logs.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role
+resource "aws_iam_role" "flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  name_prefix        = "vpc-${var.name}-flow-logs-"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_vpc_logs[0].json
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document
+data "aws_iam_policy_document" "flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy
+resource "aws_iam_role_policy" "flow_logs" {
+  count = var.enable_flow_logs ? 1 : 0
+
+  name_prefix = "vpc-${var.name}-flow-logs-"
+  role        = aws_iam_role.flow_logs[0].id
+  policy      = data.aws_iam_policy_document.flow_logs[0].json
+}

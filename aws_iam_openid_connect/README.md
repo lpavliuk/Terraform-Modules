@@ -40,7 +40,7 @@ module "openid_connect" {
   source = "git::https://github.com/lpavliuk/Terraform-Modules.git//aws_iam_openid_connect"
 
   client_url                  = "https://example.gitlab.com"
-  client_id                   = "example.gitlab.com"
+  client_id                   = "fe.example.com"
   client_tls_sha1_fingerprint = data.tls_certificate.client.certificates[0].sha1_fingerprint
   match_values                = [
     "https://example.gitlab.com/frontend-group/fe-webserver:ref_type:branch:ref:develop"
@@ -66,9 +66,9 @@ data "tls_certificate" "client" {
 |------|-------------|------|---------|:--------:|
 | <a name="input_client_url"></a> [client\_url](#input\_client\_url) | Client URL. For example: `https://example.com` | `string` | n/a | yes |
 | <a name="input_client_id"></a> [client\_id](#input\_client\_id) | Client ID that will be registered and used to identify an application. For example: `api.example.com` | `string` | n/a | yes |
-| <a name="input_client_tls_sha1_fingerprint"></a> [client\_tls\_sha1\_fingerprint](#input\_client\_tls\_sha1\_fingerprint) | Client URL Certificate SHA1 Fingerprint<br><br>**NOTE!** Must contain 40 alphanumeric characters (SHA1 HASH) without `:`.<br><br>`9E:11:A4:22:92:70:33:49:26:AB:7F:3B:02:CC:2D:A3:00:AB:72:XX`  => `"9E11A4229270334926AB7F3B02CC2DA300AB72XX"` | `string` | `""` | no |
-| <a name="input_match_field"></a> [match\_field](#input\_match\_field) | Match Field.<br><br>Available values:<br>  - `"sub"` (Subject)<br>  - `"aud"` (Audience) | `string` | `"sub"` | no |
-| <a name="input_match_values"></a> [match\_values](#input\_match\_values) | Value of the Subject Match Field.<br><br>For example, for GitLab:<br>  - specific project, main branch: `"project_path:mygroup/myproject:ref_type:branch:ref:main"`<br>  - all projects under a group: `"project_path:mygroup/*:ref_type:branch:ref:main"` | `list(string)` | `[]` | no |
+| <a name="input_client_tls_sha1_fingerprint"></a> [client\_tls\_sha1\_fingerprint](#input\_client\_tls\_sha1\_fingerprint) | Client URL Certificate SHA1 Fingerprint<br/><br/>**NOTE!** Must contain 40 alphanumeric characters (SHA1 HASH) without `:`.<br/><br/>`9E:11:A4:22:92:70:33:49:26:AB:7F:3B:02:CC:2D:A3:00:AB:72:XX`  => `"9E11A4229270334926AB7F3B02CC2DA300AB72XX"` | `string` | `""` | no |
+| <a name="input_match_field"></a> [match\_field](#input\_match\_field) | Match Field.<br/><br/>Available values:<br/>  - `"sub"` (Subject)<br/>  - `"aud"` (Audience) | `string` | `"sub"` | no |
+| <a name="input_match_values"></a> [match\_values](#input\_match\_values) | Value of the Subject Match Field.<br/><br/>For example, for GitLab:<br/>  - specific project, main branch: `"project_path:mygroup/myproject:ref_type:branch:ref:main"`<br/>  - all projects under a group: `"project_path:mygroup/*:ref_type:branch:ref:main"` | `list(string)` | `[]` | no |
 
 ## Outputs
 
