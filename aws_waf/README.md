@@ -26,7 +26,11 @@ module "waf" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | WAF ACL Name | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name of the WAF ACL.<br/><br/>**NOTE!** Must contain alphanumeric characters or hyphens (`-`). | `string` | n/a | yes |
+| <a name="input_scope"></a> [scope](#input\_scope) | WAF ACL Scope.<br/><br/>Available values:<br/>  - `REGIONAL`: A regional ACL is scoped for all cases (default).<br/>  - `CLOUDFRONT`: A global ACL is scoped for an AWS CloudFront distribution. | `string` | `"REGIONAL"` | no |
+| <a name="input_default_action"></a> [default\_action](#input\_default\_action) | Default action for WAF ACL. Action to perform if none of the rules contained in the WebACL match.<br/><br/>Available values:<br/>  - `Allow`: Allow the request.<br/>  - `Block`: Block the request. | `string` | `"Allow"` | no |
+| <a name="input_rules"></a> [rules](#input\_rules) | WAF ACL Rules | <pre>list(object({<br/>    name     = string<br/>    action   = object({<br/>      block = bool<br/>    })<br/>    statement = object({<br/>      managed_rule_group_statement = object({<br/>        name        = string<br/>        vendor_name = string<br/>      })<br/>      geo_match_statement = object({<br/>        country_codes = list(string)<br/>      })<br/>    })<br/>  }))</pre> | `[]` | no |
+| <a name="input_logs_retention_in_days"></a> [logs\_retention\_in\_days](#input\_logs\_retention\_in\_days) | Retention in days for Log Group in CloudWatch | `number` | `7` | no |
 
 ## Outputs
 

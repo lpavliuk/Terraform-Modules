@@ -1,24 +1,33 @@
-locals {
-  name = "${var.name}-waf-alb"
-}
-
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/wafv2_web_acl
 resource "aws_wafv2_web_acl" "this" {
-  name  = local.name
-  scope = "REGIONAL"
+  name  = var.name
+  scope = var.scope
 
   tags = {
-    Name = local.name
+    Name = var.name
   }
 
-  default_action {
-    allow {
+  dynamic "default_action" {
+    for_each = var.default_action == "Allow" ? [var.default_action] : []
+    content {
+      allow {}
+    }
+  }
+
+  dynamic "default_action" {
+    for_each = var.default_action == "Block" ? [var.default_action] : []
+    content {
+      block {
+        custom_response {
+          response_code = 403
+        }
+      }
     }
   }
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = "WAF_Common_Protections"
+    metric_name                = var.name
     sampled_requests_enabled   = true
   }
 
@@ -128,6 +137,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "this" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group
 resource "aws_cloudwatch_log_group" "this" {
-  name              = "aws-waf-logs-${local.name}"
-  retention_in_days = 30
+  # NOTE! Required to be named aws-waf-logs-<name> for WAF to work
+  name              = "aws-waf-logs-${var.name}"
+  retention_in_days = var.logs_retention_in_days
 }

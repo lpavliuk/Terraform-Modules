@@ -1,5 +1,5 @@
 output "name" {
-  value       = local.name
+  value       = aws_wafv2_web_acl.this.name
   sensitive   = false
   description = "WAF ACL Name"
 }

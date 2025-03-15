@@ -6,9 +6,11 @@ resource "aws_lb" "this" {
   subnets            = var.subnet_ids
   security_groups    = concat(var.extra_sg_ids, [aws_security_group.this.id])
 
-  enable_deletion_protection = var.enable_deletion_protection
-  preserve_host_header       = var.preserve_host_header
-  xff_header_processing_mode = var.xff_header_processing_mode
+  enable_deletion_protection       = var.enable_deletion_protection
+  preserve_host_header             = var.preserve_host_header
+  xff_header_processing_mode       = var.xff_header_processing_mode
+  enable_cross_zone_load_balancing = true # For application load balancer this feature is always enabled (true) and cannot be disabled
+  enable_zonal_shift               = true
 
   dynamic "access_logs" {
     for_each = var.enable_logging ? [true] : []
@@ -134,7 +136,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
   bucket = aws_s3_bucket.alb_logs[0].id
 
   rule {
-    id = "all_objects"
+    id     = "all_objects"
+
+    filter {
+      prefix = ""
+    }
 
     abort_incomplete_multipart_upload {
       days_after_initiation = 1

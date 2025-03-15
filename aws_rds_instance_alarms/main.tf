@@ -3,7 +3,9 @@ locals {
   # Max Connections: DBInstanceClassMemoryBytes/12582880
   # db.t3.micro: 1 GiB (RDS Instance RAM) = 1073741824 bytes (DBInstanceClassMemoryBytes)
   max_connections_limit = (local.datasets.db_instance_classes_memory_gib[var.db_instance_class] * 1073741824) / 12582880
-  db_connections_limit_threshold = floor((local.max_connections_limit / 100) * var.db_connections_limit_threshold)
+  # NOTE: The threshold is set to approximately 10% less than the actual limit because the RDS reserves a significant portion of
+  # the available memory for the operating system and the RDS processes that manage the DB instance.
+  db_connections_limit_threshold = floor((local.max_connections_limit / 100) * (var.db_connections_limit_threshold - 10))
   alarms = [
     {
       codename            : "cpu_utilization_too_high",
