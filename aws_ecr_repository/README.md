@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "ecr_repository_policy" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.72 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 7.0, >= 5.72 |
 
 ## Inputs
 

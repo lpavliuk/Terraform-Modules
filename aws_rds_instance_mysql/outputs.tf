@@ -46,6 +46,36 @@ output "master_user_secret" {
   description = "AWS Secret Manager secret details where Database Master Password is stored"
 }
 
+output "read_replica_id" {
+  value       = var.read_replica_enabled ? aws_db_instance.read_replica[0].id : null
+  sensitive   = false
+  description = "Read Replica ID"
+}
+
+output "read_replica_name" {
+  value       = var.read_replica_enabled ? aws_db_instance.read_replica[0].identifier : null
+  sensitive   = false
+  description = "Read Replica Name"
+}
+
+output "read_replica_arn" {
+  value       = var.read_replica_enabled ? aws_db_instance.read_replica[0].arn : null
+  sensitive   = false
+  description = "Read Replica ARN"
+}
+
+output "read_replica_host" {
+  value       = var.read_replica_enabled ? aws_db_instance.read_replica[0].address : null
+  sensitive   = false
+  description = "Read Replica Host"
+}
+
+output "read_replica_port" {
+  value       = var.read_replica_enabled ? aws_db_instance.read_replica[0].port : null
+  sensitive   = false
+  description = "Read Replica Port"
+}
+
 output "security_group_id" {
   value       = aws_security_group.this.id
   sensitive   = false

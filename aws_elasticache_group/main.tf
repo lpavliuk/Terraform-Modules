@@ -1,10 +1,12 @@
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_cluster
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_replication_group
 resource "aws_elasticache_replication_group" "this" {
   replication_group_id       = "${var.name}-cluster"
   description                = "ElastiCache Cluster for ${var.name}"
   num_cache_clusters         = var.num_cache_cluster
   automatic_failover_enabled = var.num_cache_cluster > 1 ? true : false
   multi_az_enabled           = var.num_cache_cluster > 1 ? true : false
+  auth_token                 = var.auth_token != "" ? var.auth_token : null
+  auth_token_update_strategy = var.auth_token != "" ? var.auth_token_update_strategy : null
 
   node_type                  = var.node_type
   port                       = var.port
@@ -50,7 +52,7 @@ resource "aws_cloudwatch_log_group" "this" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elasticache_user_group
 resource "aws_elasticache_user_group" "this" {
-  engine        = upper(var.engine)
+  engine        = var.engine
   user_group_id = var.name
   user_ids      = [aws_elasticache_user.default.user_id] # Requires to have a default user
 
@@ -64,7 +66,7 @@ resource "aws_elasticache_user" "default" {
   user_id              = "${var.name}-default"
   user_name            = "default"
   access_string        = "on ~app::* -@all" # https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Clusters.RBAC.html
-  engine               = upper(var.engine)
+  engine               = var.engine
   no_password_required = true
 }
 

@@ -62,13 +62,17 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
   rule {
     id = "all_objects"
 
+    filter {
+      prefix = ""
+    }
+
     abort_incomplete_multipart_upload {
       days_after_initiation = var.abort_incomplete_multipart_upload_after_days
     }
 
     expiration {
       days                         = var.current_version_expiration_days != 0 ? var.current_version_expiration_days : null
-      expired_object_delete_marker = var.current_version_expiration_days != 0 ? false : var.expired_object_delete_marker
+      expired_object_delete_marker = var.current_version_expiration_days != 0 ? null : var.expired_object_delete_marker
     }
 
     noncurrent_version_expiration {
@@ -210,7 +214,7 @@ resource "null_resource" "s3_batch_operation" {
         --role-arn ${aws_iam_role.s3_batch_operation[0].arn} \
         --no-confirmation-required \
         --profile ${var.aws_cli_profile} \
-        --region ${data.aws_region.current.name}
+        --region ${data.aws_region.current.region}
 EOT
   }
 
@@ -232,11 +236,23 @@ resource "aws_iam_role" "s3_batch_operation" {
   name_prefix        = "s3-batch-operation-role-"
   description        = "S3 ${aws_s3_bucket.this.bucket}: Replicating existed objects"
   assume_role_policy = data.aws_iam_policy_document.s3_batch_operation_role[0].json
+}
 
-  inline_policy {
-    name   = "S3_Batch_Operation_Policy_${replace(aws_s3_bucket.this.bucket, "-", "_")}"
-    policy = data.aws_iam_policy_document.s3_batch_operation[0].json
-  }
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policies_exclusive
+resource "aws_iam_role_policies_exclusive" "s3_batch_operation" {
+  count    = var.enable_replication ? 1 : 0
+
+  role_name    = aws_iam_role.s3_batch_operation[0].name
+  policy_names = [aws_iam_role_policy.s3_batch_operation_policy[0].name]
+}
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy
+resource "aws_iam_role_policy" "s3_batch_operation_policy" {
+  count    = var.enable_replication ? 1 : 0
+
+  name   = "S3_Batch_Operation_Policy_${replace(aws_s3_bucket.this.bucket, "-", "_")}"
+  role   = aws_iam_role.s3_batch_operation[0].id
+  policy = data.aws_iam_policy_document.s3_batch_operation[0].json
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document

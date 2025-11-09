@@ -5,6 +5,7 @@ resource "aws_lb" "this" {
   internal           = var.is_private
   subnets            = var.subnet_ids
   security_groups    = concat(var.extra_sg_ids, [aws_security_group.this.id])
+  idle_timeout       = var.idle_timeout
 
   enable_deletion_protection       = var.enable_deletion_protection
   preserve_host_header             = var.preserve_host_header

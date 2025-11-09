@@ -134,6 +134,18 @@ variable "multi_az" {
   description = "Enable Multi-AZ for the RDS Instance"
 }
 
+variable "read_replica_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable creation of a Read Replica for the RDS Instance"
+}
+
+variable "read_replica_instance_type" {
+  type        = string
+  default     = null
+  description = "RDS Read Replica Instance Type (e.g. `db.t3.micro`). If not set, the same instance type as the primary instance will be used."
+}
+
 variable "backup_retention_period_days" {
   type        = number
   default     = 7
@@ -173,31 +185,25 @@ variable "maintenance_window_utc_period" {
 variable cloudwatch_logs_exports {
   type        = list(string)
   default     = []
-  description = "Enable publishing MySQL logs to Amazon CloudWatch Logs. Available: `error`, `general` and `slowquery`"
+  description = "Enable publishing MySQL logs to Amazon CloudWatch Logs. Available: `error`, `general`, `slowquery` and `audit`."
 
   validation {
-    error_message = "Only 'error', 'general' and 'slowquery' can be defined"
+    error_message = "Only 'error', 'general', 'slowquery' and 'audit' can be defined"
     condition     = alltrue([
-    for log in var.cloudwatch_logs_exports : contains(["error", "general", "slowquery"], log)
+      for log in var.cloudwatch_logs_exports : contains(["error", "general", "slowquery", "audit"], log)
     ])
   }
 }
 
 variable "cloudwatch_logs_retention_period_days" {
   type        = number
-  default     = 30
+  default     = 7
   description = "CloudWatch Logs retention period in days. Available: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365."
 
   validation {
     error_message = "Invalid retention value! Available: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365]"
     condition     = contains([1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365], var.cloudwatch_logs_retention_period_days)
   }
-}
-
-variable "aws_cli_profile" {
-  type        = string
-  default     = null
-  description = "AWS CLI Profile used for this module. Used to execute AWS CLI `local-exec` commands absent in Terraform"
 }
 
 variable "db_parameters" {

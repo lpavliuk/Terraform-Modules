@@ -6,10 +6,11 @@ locals {
   # NOTE: The threshold is set to approximately 10% less than the actual limit because the RDS reserves a significant portion of
   # the available memory for the operating system and the RDS processes that manage the DB instance.
   db_connections_limit_threshold = floor((local.max_connections_limit / 100) * (var.db_connections_limit_threshold - 10))
+  alarm_name_prefix = "${var.name_prefix}rds-${var.db_cluster_name == "" ? var.db_instance_name : var.db_cluster_name}"
   alarms = [
     {
       codename            : "cpu_utilization_too_high",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-highCPUUtilization",
+      name                : "${local.alarm_name_prefix}-highCPUUtilization",
       is_enabled          : var.enable_cpu_utilization_alarms
       metric_name         : "CPUUtilization",
       comparison_operator : "GreaterThanThreshold",
@@ -19,7 +20,7 @@ locals {
     },
     {
       codename            : "cpu_credit_balance_too_low",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-lowCPUCreditBalance",
+      name                : "${local.alarm_name_prefix}-lowCPUCreditBalance",
       is_enabled          : var.enable_cpu_credit_balance_alarms
       metric_name         : "CPUCreditBalance",
       comparison_operator : "LessThanThreshold",
@@ -29,7 +30,7 @@ locals {
     },
     {
       codename            : "read_iops_too_high",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-highReadIOPS",
+      name                : "${local.alarm_name_prefix}-highReadIOPS",
       is_enabled          : var.enable_read_iops_alarms
       metric_name         : "ReadIOPS",
       comparison_operator : "GreaterThanThreshold",
@@ -37,9 +38,19 @@ locals {
       evaluation_periods  : "1" #
       description         : "Average database Read IOPS too high"
     },
+    { // Aurora only
+      codename            : "select_throughput_too_high",
+      name                : "${local.alarm_name_prefix}-highSelectThroughput",
+      is_enabled          : var.is_aurora ? var.enable_select_throughput_alarms : false
+      metric_name         : "SelectThroughput",
+      comparison_operator : "GreaterThanThreshold",
+      threshold           : var.select_throughput_too_high_threshold
+      evaluation_periods  : "1" #
+      description         : "Average database Select Throughput too high"
+    },
     {
       codename            : "burst_balance_too_low",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-lowEBSBurstBalance",
+      name                : "${local.alarm_name_prefix}-lowEBSBurstBalance",
       is_enabled          : var.enable_burst_balance_alarms
       metric_name         : "BurstBalance",
       comparison_operator : "LessThanThreshold",
@@ -49,7 +60,7 @@ locals {
     },
     {
       codename            : "disk_queue_depth_too_high",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-highDiskQueueDepth",
+      name                : "${local.alarm_name_prefix}-highDiskQueueDepth",
       is_enabled          : var.enable_disk_queue_depth_alarms
       metric_name         : "DiskQueueDepth",
       comparison_operator : "GreaterThanThreshold",
@@ -59,7 +70,7 @@ locals {
     },
     {
       codename            : "freeable_memory_too_low",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-lowFreeableMemory",
+      name                : "${local.alarm_name_prefix}-lowFreeableMemory",
       is_enabled          : var.enable_freeable_memory_alarms
       metric_name         : "FreeableMemory",
       comparison_operator : "LessThanThreshold",
@@ -69,9 +80,9 @@ locals {
     },
     {
       codename            : "disk_free_storage_space_threshold",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-lowFreeStorageSpace",
+      name                : "${local.alarm_name_prefix}-lowFreeStorageSpace",
       is_enabled          : var.enable_disk_free_storage_space_alarms
-      metric_name         : "FreeStorageSpace",
+      metric_name         : var.is_aurora ? "FreeLocalStorage" : "FreeStorageSpace",
       comparison_operator : "LessThanThreshold",
       threshold           : var.disk_free_storage_space_threshold * 1000 * 1000, # Mb => Bytes
       evaluation_periods  : var.evaluation_periods
@@ -79,7 +90,7 @@ locals {
     },
     {
       codename            : "memory_swap_usage_too_high",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-highSwapUsage",
+      name                : "${local.alarm_name_prefix}-highSwapUsage",
       is_enabled          : var.enable_memory_swap_usage_alarms
       metric_name         : "SwapUsage",
       comparison_operator : "GreaterThanThreshold",
@@ -89,7 +100,7 @@ locals {
     },
     {
       codename            : "db_connections_limit",
-      name                : "${var.name_prefix}rds-${var.db_instance_name}-limitDBConnections",
+      name                : "${local.alarm_name_prefix}-limitDBConnections",
       is_enabled          : var.enable_db_connections_alarms
       metric_name         : "DatabaseConnections",
       comparison_operator : "GreaterThanThreshold",
@@ -116,8 +127,12 @@ resource "aws_cloudwatch_metric_alarm" "this" {
   alarm_actions       = var.sns_topic_arns
   ok_actions          = var.sns_topic_arns
 
-  dimensions = { # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/dimensions.html
+  dimensions = var.db_cluster_name == "" ? {
+    # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/dimensions.html
     DBInstanceIdentifier = var.db_instance_name
+  } : {
+    # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/dimensions.html
+    DBClusterIdentifier = var.db_cluster_name
   }
 }
 
@@ -125,18 +140,18 @@ resource "aws_cloudwatch_metric_alarm" "this" {
 resource "aws_db_event_subscription" "this" {
   for_each = toset(var.sns_topic_arns)
 
-  name_prefix = "${var.db_instance_name}-"
+  name_prefix = "${var.db_cluster_name == "" ? var.db_instance_name : var.db_cluster_name}-"
   sns_topic   = each.value
 
-  source_type = "db-instance"
-  source_ids  = [var.db_instance_name]
+  source_type = var.db_cluster_name == "" ? "db-instance" : "db-cluster"
+  source_ids  = [var.db_cluster_name == "" ? var.db_instance_name : var.db_cluster_name]
 
   event_categories = [
     "failover",
     "failure",
     "low storage",
     "maintenance",
-#    "notification",
+    #    "notification",
     "recovery",
   ]
 }

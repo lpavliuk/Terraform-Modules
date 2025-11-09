@@ -42,7 +42,7 @@ module "rds_instance" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.22 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 7.0, >= 5.22 |
 
 ## Inputs
 
@@ -64,14 +64,15 @@ module "rds_instance" {
 | <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | CA Certificate of the database | `string` | `"rds-ca-rsa4096-g1"` | no |
 | <a name="input_is_private"></a> [is\_private](#input\_is\_private) | Enable private mode of the RDS Instance (accessible only from VPC) | `bool` | n/a | yes |
 | <a name="input_multi_az"></a> [multi\_az](#input\_multi\_az) | Enable Multi-AZ for the RDS Instance | `bool` | n/a | yes |
+| <a name="input_read_replica_enabled"></a> [read\_replica\_enabled](#input\_read\_replica\_enabled) | Enable creation of a Read Replica for the RDS Instance | `bool` | `false` | no |
+| <a name="input_read_replica_instance_type"></a> [read\_replica\_instance\_type](#input\_read\_replica\_instance\_type) | RDS Read Replica Instance Type (e.g. `db.t3.micro`). If not set, the same instance type as the primary instance will be used. | `string` | `null` | no |
 | <a name="input_backup_retention_period_days"></a> [backup\_retention\_period\_days](#input\_backup\_retention\_period\_days) | Automatic Backup retention period in days. NOTE: `0` days disables the automatic backups. | `number` | `7` | no |
 | <a name="input_backup_window_utc_period"></a> [backup\_window\_utc\_period](#input\_backup\_window\_utc\_period) | The daily time range of the automatic backups (in UTC). Default: `14:00-16:00` (01:00-03:00 AEDT)<br/>Must not overlap `maintenance_window_utc_period` parameter | `string` | `"14:00-16:00"` | no |
 | <a name="input_enable_enhanced_monitoring"></a> [enable\_enhanced\_monitoring](#input\_enable\_enhanced\_monitoring) | Enable Enhanced Monitoring | `bool` | `false` | no |
 | <a name="input_enable_auto_minor_version_upgrade"></a> [enable\_auto\_minor\_version\_upgrade](#input\_enable\_auto\_minor\_version\_upgrade) | Enable Auto Minor Version Upgrade | `bool` | `false` | no |
 | <a name="input_maintenance_window_utc_period"></a> [maintenance\_window\_utc\_period](#input\_maintenance\_window\_utc\_period) | The daily time range of the maintenance (in UTC). Default: `Sat:16:00-Sat:18:00` (Sun:03:00-Sun:05:00 AEDT)<br/>Must not overlap `backup_window_utc_period` parameter | `string` | `"Sat:16:00-Sat:18:00"` | no |
-| <a name="input_cloudwatch_logs_exports"></a> [cloudwatch\_logs\_exports](#input\_cloudwatch\_logs\_exports) | Enable publishing MySQL logs to Amazon CloudWatch Logs. Available: `error`, `general` and `slowquery` | `list(string)` | `[]` | no |
-| <a name="input_cloudwatch_logs_retention_period_days"></a> [cloudwatch\_logs\_retention\_period\_days](#input\_cloudwatch\_logs\_retention\_period\_days) | CloudWatch Logs retention period in days. Available: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365. | `number` | `30` | no |
-| <a name="input_aws_cli_profile"></a> [aws\_cli\_profile](#input\_aws\_cli\_profile) | AWS CLI Profile used for this module. Used to execute AWS CLI `local-exec` commands absent in Terraform | `string` | `null` | no |
+| <a name="input_cloudwatch_logs_exports"></a> [cloudwatch\_logs\_exports](#input\_cloudwatch\_logs\_exports) | Enable publishing MySQL logs to Amazon CloudWatch Logs. Available: `error`, `general`, `slowquery` and `audit`. | `list(string)` | `[]` | no |
+| <a name="input_cloudwatch_logs_retention_period_days"></a> [cloudwatch\_logs\_retention\_period\_days](#input\_cloudwatch\_logs\_retention\_period\_days) | CloudWatch Logs retention period in days. Available: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365. | `number` | `7` | no |
 | <a name="input_db_parameters"></a> [db\_parameters](#input\_db\_parameters) | Parameters are added to the DB Parameter Group.<br/><br/>- [MySQL server system parameters](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html)<br/>- [Aurora MySQL configuration parameters](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Reference.ParameterGroups.html) | <pre>list(object({<br/>    name  = string<br/>    value = string<br/>  }))</pre> | `[]` | no |
 
 ## Outputs
@@ -86,18 +87,25 @@ module "rds_instance" {
 | <a name="output_instance_class"></a> [instance\_class](#output\_instance\_class) | RDS Instance Class |
 | <a name="output_master_user"></a> [master\_user](#output\_master\_user) | Database Master Username |
 | <a name="output_master_user_secret"></a> [master\_user\_secret](#output\_master\_user\_secret) | AWS Secret Manager secret details where Database Master Password is stored |
+| <a name="output_read_replica_id"></a> [read\_replica\_id](#output\_read\_replica\_id) | Read Replica ID |
+| <a name="output_read_replica_name"></a> [read\_replica\_name](#output\_read\_replica\_name) | Read Replica Name |
+| <a name="output_read_replica_arn"></a> [read\_replica\_arn](#output\_read\_replica\_arn) | Read Replica ARN |
+| <a name="output_read_replica_host"></a> [read\_replica\_host](#output\_read\_replica\_host) | Read Replica Host |
+| <a name="output_read_replica_port"></a> [read\_replica\_port](#output\_read\_replica\_port) | Read Replica Port |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | Security Group ID of the RDS Instance |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_log_group.logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_db_instance.read_replica](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance) | resource |
 | [aws_db_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance) | resource |
+| [aws_db_option_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_option_group) | resource |
 | [aws_db_parameter_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_parameter_group) | resource |
 | [aws_iam_role.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [null_resource.cloudwatch_log_retention_period](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_iam_policy_document.rds_enhanced_monitoring](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 <!-- END_TF_DOCS -->

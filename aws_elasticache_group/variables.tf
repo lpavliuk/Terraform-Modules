@@ -85,6 +85,37 @@ variable "parameter_group_name" {
   description = "Parameter Group Name"
 }
 
+variable "auth_token" {
+  type        = string
+  default     = ""
+  description = <<-EOF
+    Auth Token for the ElastiCache Instance.
+
+    **NOTE!** Required for Redis Cluster with `transit_encryption_enabled` set to `true`.
+  EOF
+
+  validation {
+    condition     = var.auth_token == "" || can(regex("^[a-zA-Z0-9]{16,40}$", var.auth_token))
+    error_message = "Auth token must be empty or contain only alphanumeric characters and be between 16 and 40 characters long."
+  }
+}
+
+variable "auth_token_update_strategy" {
+    type        = string
+    default     = "ROTATE"
+    description = <<-EOF
+        Auth Token Update Strategy. Available values:
+        - `SET` - Set a new auth token.
+        - `ROTATE` - Rotate the auth token.
+        - `DELETE` - Delete the auth token.
+    EOF
+
+    validation {
+        condition = contains(["SET", "ROTATE", "DELETE"], var.auth_token_update_strategy)
+        error_message = "Only the following values of 'auth_token_update_strategy' are available: SET, ROTATE, DELETE"
+    }
+}
+
 variable "vpc_id" {
   type        = string
   nullable    = false

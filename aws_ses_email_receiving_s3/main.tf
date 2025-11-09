@@ -95,7 +95,7 @@ resource "aws_route53_record" "mx" {
   name    = var.email_domain_name
   type    = "MX"
   ttl     = "300"
-  records = ["10 inbound-smtp.${data.aws_region.current.name}.amazonaws.com"]
+  records = ["10 inbound-smtp.${data.aws_region.current.region}.amazonaws.com"]
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_domain_identity
@@ -122,7 +122,7 @@ resource "aws_route53_record" "email_receiving_amazonses_dkim_record" {
   count   = 3
 
   zone_id = var.domain_zone_id
-  name    = "${aws_ses_domain_dkim.email_receiving.dkim_tokens[count.index]}._domainkey"
+  name    = "${aws_ses_domain_dkim.email_receiving.dkim_tokens[count.index]}._domainkey.${aws_ses_domain_identity.email_receiving.domain}"
   type    = "CNAME"
   ttl     = "600"
   records = ["${aws_ses_domain_dkim.email_receiving.dkim_tokens[count.index]}.dkim.amazonses.com"]

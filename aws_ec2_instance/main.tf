@@ -7,7 +7,7 @@ resource "aws_instance" "this" {
 
   vpc_security_group_ids  = concat([var.security_group_id], var.extra_sg_ids)
 
-  user_data   = var.user_data
+  user_data               = var.user_data != "" ? var.user_data : null
 
   //noinspection HCLUnknownBlockType
   private_dns_name_options {

@@ -29,7 +29,7 @@ module "alb" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.90 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 7.0, >= 5.90 |
 
 ## Inputs
 
@@ -38,6 +38,7 @@ module "alb" {
 | <a name="input_name"></a> [name](#input\_name) | ALB Name | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID the ALB will be created in | `string` | n/a | yes |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs the ALB will be attached to | `list(string)` | n/a | yes |
+| <a name="input_idle_timeout"></a> [idle\_timeout](#input\_idle\_timeout) | Idle Timeout of the ALB in seconds | `number` | `60` | no |
 | <a name="input_enable_logging"></a> [enable\_logging](#input\_enable\_logging) | Enable the ALB Access and Connection Logging to S3 bucket | `bool` | `false` | no |
 | <a name="input_logs_expiration_days"></a> [logs\_expiration\_days](#input\_logs\_expiration\_days) | Retention period of the ALB Access and Connection Logs in S3 bucket | `number` | `7` | no |
 | <a name="input_enable_deletion_protection"></a> [enable\_deletion\_protection](#input\_enable\_deletion\_protection) | Enable the deletion protection of the ALB | `bool` | `false` | no |

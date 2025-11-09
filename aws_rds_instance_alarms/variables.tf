@@ -6,14 +6,26 @@ variable "name_prefix" {
 
 variable "db_instance_name" {
   type        = string
-  nullable    = false
+  default     = ""
   description = "RDS Instance Name alarms will be created for"
+}
+
+variable "db_cluster_name" {
+  type        = string
+  default     = ""
+  description = "RDS Cluster Name alarms will be created for (if any)"
 }
 
 variable "db_instance_class" {
   type        = string
   nullable    = false
   description = "RDS Instance Class for CloudWatch alarms names"
+}
+
+variable "is_aurora" {
+  type        = bool
+  default     = false
+  description = "Set to true if the alarms are created for an Aurora cluster"
 }
 
 variable "sns_topic_arns" {
@@ -50,6 +62,12 @@ variable "enable_read_iops_alarms" {
   type        = bool
   default     = true
   description = "Create Read IOPS alarms"
+}
+
+variable "enable_select_throughput_alarms" {
+  type        = bool
+  default     = true
+  description = "Create Select Throughput alarms. (Only for Aurora clusters!)"
 }
 
 variable "enable_burst_balance_alarms" {
@@ -106,6 +124,12 @@ variable "read_iops_too_high_threshold" {
   description = "The number of IOPS is meant to be suspicious"
 }
 
+variable "select_throughput_too_high_threshold" {
+  type        = number
+  default     = 100 # units
+  description = "The number of Select Throughput is meant to be suspicious"
+}
+
 variable "burst_balance_too_low_threshold" {
   type        = number
   default     = 90 # credit units
@@ -126,7 +150,7 @@ variable "disk_free_storage_space_threshold" {
 
 variable "freeable_memory_too_low_threshold" {
   type        = number
-  default     = 25 # Megabytes
+  default     = 150 # Megabytes
   description = "The minimum amount of available random access memory in Megabytes"
 }
 

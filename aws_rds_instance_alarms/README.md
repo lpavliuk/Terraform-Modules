@@ -54,21 +54,24 @@ module "rds_instance_alarms" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.22 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 7.0, >= 5.22 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for CloudWatch alarms names | `string` | `""` | no |
-| <a name="input_db_instance_name"></a> [db\_instance\_name](#input\_db\_instance\_name) | RDS Instance Name alarms will be created for | `string` | n/a | yes |
+| <a name="input_db_instance_name"></a> [db\_instance\_name](#input\_db\_instance\_name) | RDS Instance Name alarms will be created for | `string` | `""` | no |
+| <a name="input_db_cluster_name"></a> [db\_cluster\_name](#input\_db\_cluster\_name) | RDS Cluster Name alarms will be created for (if any) | `string` | `""` | no |
 | <a name="input_db_instance_class"></a> [db\_instance\_class](#input\_db\_instance\_class) | RDS Instance Class for CloudWatch alarms names | `string` | n/a | yes |
+| <a name="input_is_aurora"></a> [is\_aurora](#input\_is\_aurora) | Set to true if the alarms are created for an Aurora cluster | `bool` | `false` | no |
 | <a name="input_sns_topic_arns"></a> [sns\_topic\_arns](#input\_sns\_topic\_arns) | SNS Topic ARNs attached to CloudWatch alarms | `list(string)` | n/a | yes |
 | <a name="input_evaluation_periods"></a> [evaluation\_periods](#input\_evaluation\_periods) | Evaluation period over which to use when triggering alarms | `number` | `5` | no |
 | <a name="input_statistics_period"></a> [statistics\_period](#input\_statistics\_period) | Number of seconds that make each statistic period | `number` | `60` | no |
 | <a name="input_enable_cpu_utilization_alarms"></a> [enable\_cpu\_utilization\_alarms](#input\_enable\_cpu\_utilization\_alarms) | Create CPU Utilization alarms | `bool` | `true` | no |
 | <a name="input_enable_cpu_credit_balance_alarms"></a> [enable\_cpu\_credit\_balance\_alarms](#input\_enable\_cpu\_credit\_balance\_alarms) | Create CPU Credit Balance alarms | `bool` | `true` | no |
 | <a name="input_enable_read_iops_alarms"></a> [enable\_read\_iops\_alarms](#input\_enable\_read\_iops\_alarms) | Create Read IOPS alarms | `bool` | `true` | no |
+| <a name="input_enable_select_throughput_alarms"></a> [enable\_select\_throughput\_alarms](#input\_enable\_select\_throughput\_alarms) | Create Select Throughput alarms. (Only for Aurora clusters!) | `bool` | `true` | no |
 | <a name="input_enable_burst_balance_alarms"></a> [enable\_burst\_balance\_alarms](#input\_enable\_burst\_balance\_alarms) | Create Burst Balance alarms | `bool` | `true` | no |
 | <a name="input_enable_disk_queue_depth_alarms"></a> [enable\_disk\_queue\_depth\_alarms](#input\_enable\_disk\_queue\_depth\_alarms) | Create Disk Queue Depth alarms | `bool` | `true` | no |
 | <a name="input_enable_disk_free_storage_space_alarms"></a> [enable\_disk\_free\_storage\_space\_alarms](#input\_enable\_disk\_free\_storage\_space\_alarms) | Create Disk Free Storage Space alarms | `bool` | `true` | no |
@@ -78,10 +81,11 @@ module "rds_instance_alarms" {
 | <a name="input_cpu_utilization_too_high_threshold"></a> [cpu\_utilization\_too\_high\_threshold](#input\_cpu\_utilization\_too\_high\_threshold) | The maximum percentage of CPU utilization | `number` | `80` | no |
 | <a name="input_cpu_credit_balance_too_low_threshold"></a> [cpu\_credit\_balance\_too\_low\_threshold](#input\_cpu\_credit\_balance\_too\_low\_threshold) | The minimum number of CPU credits (t2 instances only) available | `number` | `50` | no |
 | <a name="input_read_iops_too_high_threshold"></a> [read\_iops\_too\_high\_threshold](#input\_read\_iops\_too\_high\_threshold) | The number of IOPS is meant to be suspicious | `number` | `100` | no |
+| <a name="input_select_throughput_too_high_threshold"></a> [select\_throughput\_too\_high\_threshold](#input\_select\_throughput\_too\_high\_threshold) | The number of Select Throughput is meant to be suspicious | `number` | `100` | no |
 | <a name="input_burst_balance_too_low_threshold"></a> [burst\_balance\_too\_low\_threshold](#input\_burst\_balance\_too\_low\_threshold) | The minimum percent of General Purpose SSD (gp2) burst-bucket I/O credits available | `number` | `90` | no |
 | <a name="input_disk_queue_depth_too_high_threshold"></a> [disk\_queue\_depth\_too\_high\_threshold](#input\_disk\_queue\_depth\_too\_high\_threshold) | The maximum number of outstanding IOs (read/write requests) waiting to access the disk | `number` | `64` | no |
 | <a name="input_disk_free_storage_space_threshold"></a> [disk\_free\_storage\_space\_threshold](#input\_disk\_free\_storage\_space\_threshold) | The minimum amount of available storage space in Megabytes | `number` | `2000` | no |
-| <a name="input_freeable_memory_too_low_threshold"></a> [freeable\_memory\_too\_low\_threshold](#input\_freeable\_memory\_too\_low\_threshold) | The minimum amount of available random access memory in Megabytes | `number` | `25` | no |
+| <a name="input_freeable_memory_too_low_threshold"></a> [freeable\_memory\_too\_low\_threshold](#input\_freeable\_memory\_too\_low\_threshold) | The minimum amount of available random access memory in Megabytes | `number` | `150` | no |
 | <a name="input_memory_swap_usage_too_high_threshold"></a> [memory\_swap\_usage\_too\_high\_threshold](#input\_memory\_swap\_usage\_too\_high\_threshold) | The maximum amount of swap space used on the DB instance in Megabytes | `number` | `1000` | no |
 | <a name="input_db_connections_limit_threshold"></a> [db\_connections\_limit\_threshold](#input\_db\_connections\_limit\_threshold) | The maximum percent of connections connected to the DB instance | `number` | `80` | no |
 

@@ -105,10 +105,21 @@ resource "aws_launch_template" "ecs_node" {
     }
   }
 
+  metadata_options {
+    http_endpoint               = "enabled"  # enable IMDS
+    http_tokens                 = "required" # enforce IMDSv2
+    http_put_response_hop_limit = 1
+  }
+
   # [!] It is required to pass ECS cluster name, so AWS can register EC2 instance as node of ECS cluster.
   user_data = base64encode(<<-EOF
       #!/bin/bash
       echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config;
+
+      # [!] Disable access to the EC2 Instance Metadata Service (IMDS) from Docker containers.
+      # This is a security measure to prevent containers from accessing sensitive metadata.
+      # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-roles.html#security-iam-roles-recommendations
+      sudo iptables -A FORWARD -i docker0 -d 169.254.169.254 -j DROP
     EOF
   )
 }

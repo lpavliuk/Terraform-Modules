@@ -7,6 +7,13 @@ resource "aws_sns_sms_preferences" "this" {
   delivery_status_success_sampling_rate = 100
 }
 
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/pinpointsmsvoicev2_configuration_set
+resource "aws_pinpointsmsvoicev2_configuration_set" "this" {
+  name                 = var.default_sender_id
+  default_sender_id    = var.default_sender_id
+  default_message_type = upper(var.default_sms_type)
+}
+
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm
 resource "aws_cloudwatch_metric_alarm" "this" {
   count = var.notification_topic_arn != "" ? 1 : 0

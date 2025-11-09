@@ -32,7 +32,7 @@ resource "aws_elasticache_subnet_group" "this" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | < 2.0.0, >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 6.0, >= 5.72 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | < 7.0, >= 6.0 |
 
 ## Inputs
 
@@ -45,6 +45,8 @@ resource "aws_elasticache_subnet_group" "this" {
 | <a name="input_engine"></a> [engine](#input\_engine) | Cache Engine. Available engines:<br/>  - `redis`<br/>  - `valkey` | `string` | `"redis"` | no |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Engine Version | `string` | `"7.1"` | no |
 | <a name="input_parameter_group_name"></a> [parameter\_group\_name](#input\_parameter\_group\_name) | Parameter Group Name | `string` | `"default.redis7"` | no |
+| <a name="input_auth_token"></a> [auth\_token](#input\_auth\_token) | Auth Token for the ElastiCache Instance.<br/><br/>**NOTE!** Required for Redis Cluster with `transit_encryption_enabled` set to `true`. | `string` | `""` | no |
+| <a name="input_auth_token_update_strategy"></a> [auth\_token\_update\_strategy](#input\_auth\_token\_update\_strategy) | Auth Token Update Strategy. Available values:<br/>- `SET` - Set a new auth token.<br/>- `ROTATE` - Rotate the auth token.<br/>- `DELETE` - Delete the auth token. | `string` | `"ROTATE"` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID the ElastiCache Instance will be provisioned in | `string` | n/a | yes |
 | <a name="input_elasticache_subnet_group_id"></a> [elasticache\_subnet\_group\_id](#input\_elasticache\_subnet\_group\_id) | ElastiCache Subnet Group ID the ElastiCache Instance will be provisioned in | `string` | n/a | yes |
 | <a name="input_enable_auto_minor_version_upgrade"></a> [enable\_auto\_minor\_version\_upgrade](#input\_enable\_auto\_minor\_version\_upgrade) | Enable Auto Minor Version Upgrade | `bool` | `true` | no |

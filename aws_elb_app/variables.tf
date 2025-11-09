@@ -16,6 +16,12 @@ variable "subnet_ids" {
   description = "Subnet IDs the ALB will be attached to"
 }
 
+variable "idle_timeout" {
+  type        = number
+  default     = 60
+  description = "Idle Timeout of the ALB in seconds"
+}
+
 variable "enable_logging" {
   type        = bool
   default     = false

@@ -196,7 +196,7 @@ data "aws_iam_policy_document" "cloudtrail_kms" {
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
-      values   = ["ec2.${data.aws_region.current.name}.amazonaws.com"]
+      values   = ["ec2.${data.aws_region.current.region}.amazonaws.com"]
     }
 
     condition {
@@ -243,7 +243,7 @@ data "aws_iam_policy_document" "cloudtrail_kms" {
 
     principals {
       type        = "Service"
-      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+      identifiers = ["logs.${data.aws_region.current.region}.amazonaws.com"]
     }
 
     actions = [

@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "< 6.0, >= 5.22"
+      version = "< 7.0, >= 5.22"
       configuration_aliases = [
         aws.requester,
         aws.accepter
